@@ -1,0 +1,10 @@
+Thumbs.db
+.DS_Store
+intelliJ project/
+.iml
+.idea
+build/
+sources/obj/
+sources/bin/
+sources/gen/
+sources/libs/armeabi-v7a/
