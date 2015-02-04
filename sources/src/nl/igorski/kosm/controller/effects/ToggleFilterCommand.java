@@ -3,8 +3,14 @@ package nl.igorski.kosm.controller.effects;
 import nl.igorski.kosm.R;
 import nl.igorski.kosm.activities.Kosm;
 import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.definitions.ParticleSounds;
+import nl.igorski.kosm.model.KosmInstruments;
 import nl.igorski.lib.audio.definitions.AudioConstants;
+import nl.igorski.lib.audio.definitions.OscillatorDestinations;
+import nl.igorski.lib.audio.definitions.WaveForms;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
+import nl.igorski.lib.audio.nativeaudio.RouteableOscillator;
+import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;
@@ -24,42 +30,51 @@ public class ToggleFilterCommand extends BaseSimpleCommand
     {
         DebugTool.log( "TOGGLE FILTER COMMAND" );
 
-        final MWProcessingChain processingChain = (( MWProcessingChain ) aNote.getBody() );
+        // we apply TWO filters
+        // one being a LFO-operated high pass filter
+        // the other being a formant filter
 
-        final boolean activated = !processingChain.formantActive;
+        final InternalSynthInstrument formantInstrument = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_KICK );
+        final InternalSynthInstrument filterInstrument  = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_SINE );
 
-//        final RouteableOscillator lfo = _instrumentProperties.instrument.getROsc();
+        final MWProcessingChain filterChain  = filterInstrument.processingChain;
+        final MWProcessingChain formantChain = formantInstrument.processingChain;
+
+        final boolean activated = !filterChain.filterActive;  // whether the command will activate or deactivate the filters
+
+        final RouteableOscillator lfo = filterInstrument.instrument.getROsc();
 
         // filter
-/*
-        if ( !processingChain.filterActive )
+
+        if ( activated )
         {
             // create LFO
-//            lfo.setWave( WaveForms.SAWTOOTH );
-//            lfo.setSpeed( .5f );
-//            lfo.setDestination( OscillatorDestinations.FILTER );
+            lfo.setWave( WaveForms.SAWTOOTH );
+            lfo.setSpeed( .5f );
+            lfo.setDestination( OscillatorDestinations.FILTER );
 
-            processingChain.filterCutoff    = AudioConstants.FILTER_MAX_FREQ * .3f;
-            processingChain.filterResonance = AudioConstants.FILTER_MAX_RESONANCE * .5f;
-            processingChain.filter          = ProcessorFactory.createFilter(processingChain);//, lfo );
+            filterChain.filterCutoff    = AudioConstants.FILTER_MAX_FREQ * .3f;
+            filterChain.filterResonance = AudioConstants.FILTER_MAX_RESONANCE * .5f;
+            filterChain.filter          = ProcessorFactory.createFilter( filterChain, lfo );
 
-//            processingChain.filter.setLFO( lfo.getLinkedOscillator() );
+            if ( !filterChain.filter.hasLFO())
+                filterChain.filter.setLFO( lfo.getLinkedOscillator() );
         }
         else
         {
-//            lfo.setDestination( OscillatorDestinations.NONE );
-            processingChain.filter.setLFO( null );
+            lfo.setDestination( OscillatorDestinations.NONE );
         }
-        processingChain.filterActive = activated;
-*/
+        filterChain.filterActive = activated;
+        filterChain.cacheActiveProcessors();
+
         // formant filter
 
-        if ( !processingChain.formantActive ) {
-            processingChain.formant = ProcessorFactory.createFormantFilter( processingChain );
+        if ( activated ) {
+            formantChain.formant = ProcessorFactory.createFormantFilter( formantChain );
         }
 
-        processingChain.formantActive = activated;
-        processingChain.cacheActiveProcessors();
+        formantChain.formantActive = activated;
+        formantChain.cacheActiveProcessors();
 
         final int buttonResourceId = activated ? R.drawable.icon_filter_active : R.drawable.icon_filter;
         ButtonTool.setImageButtonImage( Kosm.btnFilter, buttonResourceId );
