@@ -22,7 +22,7 @@
     <file path="$PROJECT_DIR$/../sources/src/nl/igorski/lib/audio/nativeaudio/DrumEvent.java" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422389204992" ignored="false" />
     <file path="$PROJECT_DIR$/../../Mikrowave/sources/jni/audiobuffer.cpp" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422383865977" ignored="false" />
     <file path="$PROJECT_DIR$/../../Ghede/sources/jni/audiobuffer.cpp" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422384808643" ignored="false" />
-    <file path="/Dummy.txt" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422384821758" ignored="false" />
+    <file path="/Dummy.txt" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1423081043296" ignored="false" />
     <file path="$PROJECT_DIR$/../../MWEngine/jni/audiobuffer.cpp" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422385863980" ignored="false" />
     <file path="/OpenWaveformMenuCommand.java" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422389465657" ignored="false" />
     <file path="/CloseWaveformMenuCommand.java" changelist="e553de11-2166-40f2-85c2-54185bb3e494" time="1422388330699" ignored="false" />
@@ -127,6 +127,14 @@
     <option name="KEY_ALIAS" value="igorski" />
     <option name="REMEMBER_PASSWORDS" value="true" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitLogSettings">
+    <option name="myDateState">
+      <MyDateState />
+    </option>
+  </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
@@ -155,7 +163,7 @@
     <option name="width" value="1280" />
     <option name="height" value="773" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
     <OptionsSetting value="true" id="Checkout" />
@@ -463,6 +471,8 @@
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="ExportedApkPath" value="$USER_HOME$/Desktop/kosm.apk" />
     <property name="ExportedModule" value="kosm" />
@@ -475,6 +485,8 @@
     <property name="WebServerToolWindowFactoryState" value="true" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PublishConfig">
     <servers>
@@ -698,6 +710,23 @@
     </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false" SSL_PROTOCOLS="sslv3">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="e553de11-2166-40f2-85c2-54185bb3e494" name="Default" comment="" />
@@ -708,7 +737,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
