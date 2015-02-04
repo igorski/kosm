@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <nl.igorski.kosm.view.ParticleSequencer
+            android:id="@+id/app"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:hardwareAccelerated="true" />
+
+    <!-- left column : waveforms -->
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingLeft="10dp"
+                  android:paddingTop="10dp"
+                  android:orientation="vertical"
+                  android:gravity="top|center_horizontal">
+
+        <ImageButton android:id="@+id/WFToggle"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/toggle_wf"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" />
+
+        <ImageButton android:id="@+id/ButtonSine"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_sine"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonSaw"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_saw"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="-10dp"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonTwang"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_ks"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="-10dp"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonKick"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_kick"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="-10dp"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonSnare"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_snare"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:layout_marginTop="-10dp"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+    </LinearLayout>
+
+    <!-- right column : audio effects -->
+    <LinearLayout android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:paddingTop="10dp"
+                  android:paddingRight="10dp"
+                  android:gravity="top|right">
+
+        <ImageButton android:id="@+id/FXToggle"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/toggle_fx"
+                     android:paddingRight="15dp"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" />
+
+        <ImageButton android:id="@+id/ButtonDelay"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/menubutton"
+                     android:src="@drawable/icon_delay"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonDistortion"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/menubutton"
+                     android:src="@drawable/icon_distortion"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonFilter"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/menubutton"
+                     android:src="@drawable/icon_filter"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+    </LinearLayout>
+
+    <!-- bottom button : sequencer mode toggle -->
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="10dp"
+                  android:layout_gravity="bottom|center_horizontal">
+
+        <Button android:id="@+id/ButtonModeToggle"
+                style="@style/ButtonText"
+                android:background="@drawable/mode_button"
+                android:text="@string/mode_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!-- bottom right : record button -->
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:paddingBottom="10dp"
+                  android:paddingRight="10dp"
+                  android:layout_gravity="bottom|right">
+
+        <ImageButton android:id="@+id/ButtonRecord"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/topbutton"
+                     android:src="@drawable/icon_record"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</FrameLayout>

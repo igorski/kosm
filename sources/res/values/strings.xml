@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">kosm</string>
+    <string name="logo_description">Kosm logo</string>
+
+    <!-- buttons -->
+    <string name="mode_default">default mode</string>
+    <string name="mode_hold">hold mode</string>
+    <string name="mode_emitter">emitter mode</string>
+    <string name="mode_360">360 mode</string>
+    <string name="mode_resetter">!! RESET !!</string>
+
+    <!-- help -->
+    <string name="welcome_title">KOSM</string>
+    <string name="welcome_body">behold, for this is your universe.\n\nyou can manipulate said universe by creating orbs (tap the screen) in one of four different modes (observe the button at the bottom of the screen).\n\nadditionally, you can adjust the cosmos\' properties by rotating your device. good use of kosm is down to experimentation.\n\nkosm, like most aural things, is best experienced with headphones...</string>
+    <string name="hold_mode_title">HOLD MODE</string>
+    <string name="hold_mode_body">tap and hold the screen at different lengths to create orbs.\n\nwhen you’re ready to start colliding particles, switch modes (to either default or emitter). the rest is down to experimenting.\n\nyou can always remove orbs by double tapping them.</string>
+    <string name="emitter_mode_title">EMITTER MODE</string>
+    <string name="emitter_mode_body">tapping a rhythm using four consecutive taps creates an emitter at the given location. an emitter will release new orbs at the rate of the average tap interval.\n\nholding down the screen during the first tap increases the mass of the resulting orbs.\n\nuncheck the “emitter” button to return to the default mode.</string>
+    <string name="three60_mode_title">360 MODE</string>
+    <string name="three60_mode_body">tap the screen at a position of choice to create a circular container.\n\nuse pinch gestures to expand or collapse the size of the circle.\n\nrotating your device while creating particles can be either a very pleasing or unsettling experience.</string>
+    <string name="resetter_mode_title">RESETTER MODE</string>
+    <string name="resetter_mode_body">long press the screen to clear ALL the orbs present in your universe. use with care.</string>
+
+    <!-- overlays -->
+    <string name="rec_complete_title">Recording complete</string>
+    <string name="rec_complete_body">Save the recording to your device ?</string>
+    <string name="writing_title">Writing output to file</string>
+    <string name="writing_body">Just a moment...</string>
+    <string name="rec_started">Recording started</string>
+    <string name="rec_stopped">Recording stopped</string>
+    <string name="rec_queued">Recording will start after starting sequencer</string>
+    <string name="rec_saved">Recording saved to device</string>
+    <string name="rec_req_save">Save recording to your device? Note that saving might take a moment.</string>
+    <string name="rec_req_save_nospace">Your device hasn\'t got enough storage space available for recording another 30 seconds of audio... Save current recording to your device? Note that saving might take a moment.</string>
+    <string name="title_render">Rendering audio</string>
+    <string name="msg_render">Please wait while your device is rendering your track to a file.</string>
+
+    <!-- errors -->
+    <string name="error_memory">Out of memory. Could not save recording.</string>
+    <string name="error_rec_space">Your device hasn\'t got enough storage space available for recording (another) 30 seconds of audio... recording cancelled</string>
+    <string name="error_no_sd">Recording of audio requires an external SD card in your device.</string>
+    <string name="error_no_opensl">Could not start native audio engine. Please try restarting your device, if the problem persists, contact the developer.</string>
+</resources>

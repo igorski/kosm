@@ -1,0 +1,243 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+#include "sequencer_api.h"
+#include "sequencer.h"
+#include "audioengine.h"
+#include <utilities/utils.h>
+#include <utilities/diskwriter.h>
+
+/* constructor / destructor */
+
+SequencerAPI::SequencerAPI()
+{
+
+};
+
+SequencerAPI::~SequencerAPI()
+{
+    // should never be removed and maintained throughout due to Object pooling...
+};
+
+/* public methods */
+
+void SequencerAPI::prepare( int aBufferSize, int aSampleRate, float aQueuedTempo,
+                            int aTimeSigBeatAmount, int aTimeSigBeatUnit )
+{
+    // set renderer output variables
+    AudioEngineProps::BUFFER_SIZE = aBufferSize;
+    AudioEngineProps::SAMPLE_RATE = aSampleRate;
+
+    // calculate buffers and ranges
+    if ( aQueuedTempo > 0 )
+    {
+        AudioEngine::queuedTempo = aQueuedTempo;
+        AudioEngine::handleTempoUpdate( aQueuedTempo, false );   // just to initialize all buffer sizes
+        setLoopPoint( 0, AudioEngine::bytes_per_bar, aTimeSigBeatAmount * aTimeSigBeatUnit );
+    }
+};
+
+/**
+ * make the sequencer loop between two given points
+ *
+ * @param aStartPosition {int} buffer offset of the loops startpoint (starts at 0 !)
+ * @param aEndPosition   {int} buffer offset of the loops endpoint
+ * @param aStepsPerBar   {int} the amount of individual segments the sequencer subdivides a single bar into
+ *                             this is used for periodic notifications when the sequencer switches step
+ */
+void SequencerAPI::setLoopPoint( int aStartPosition, int aEndPosition, int aStepsPerBar )
+{
+    AudioEngine::min_buffer_position = aStartPosition;
+    AudioEngine::max_buffer_position = aEndPosition;
+
+    // keep current buffer read pointer within the new loop range
+    if ( AudioEngine::bufferPosition <  AudioEngine::min_buffer_position ||
+         AudioEngine::bufferPosition >= AudioEngine::max_buffer_position )
+    {
+        AudioEngine::bufferPosition = AudioEngine::min_buffer_position;
+    }
+    AudioEngine::min_step_position = ( aStartPosition / AudioEngine::bytes_per_bar ) * aStepsPerBar;
+    AudioEngine::max_step_position = ( aEndPosition   / AudioEngine::bytes_per_bar ) * aStepsPerBar;
+
+    // keep current sequencer step within the new loop range
+    if ( AudioEngine::stepPosition <  AudioEngine::min_step_position ||
+         AudioEngine::stepPosition >= AudioEngine::max_step_position )
+    {
+        AudioEngine::stepPosition = AudioEngine::min_step_position;
+    }
+}
+
+void SequencerAPI::updateMeasures( int aValue, int aStepsPerBar )
+{
+    AudioEngine::amount_of_bars      = aValue;
+    AudioEngine::max_step_position   = aStepsPerBar * AudioEngine::amount_of_bars;
+    AudioEngine::max_buffer_position = AudioEngine::bytes_per_bar * AudioEngine::amount_of_bars;
+}
+
+void SequencerAPI::setTempo( float aTempo, int aTimeSigBeatAmount, int aTimeSigBeatUnit )
+{
+    AudioEngine::queuedTempo = aTempo;
+
+    AudioEngine::queuedTime_sig_beat_amount = aTimeSigBeatAmount;
+    AudioEngine::queuedTime_sig_beat_unit   = aTimeSigBeatUnit;
+}
+
+void SequencerAPI::setTempoNow( float aTempo, int aTimeSigBeatAmount, int aTimeSigBeatUnit )
+{
+    setTempo( aTempo, aTimeSigBeatAmount, aTimeSigBeatUnit );
+    AudioEngine::handleTempoUpdate( AudioEngine::queuedTempo, true );
+}
+
+void SequencerAPI::setVolume( float aVolume )
+{
+    AudioEngine::volume = aVolume;
+}
+
+void SequencerAPI::setPlaying( bool aIsPlaying )
+{
+    AudioEngine::playing = aIsPlaying;
+}
+
+void SequencerAPI::rewind()
+{
+    AudioEngine::bufferPosition = AudioEngine::min_buffer_position;
+    AudioEngine::stepPosition   = AudioEngine::min_step_position;
+
+    Observer::broadcastStepPosition();
+}
+
+/**
+ * used for intelligent pre-caching, get the BaseCacheableAudioEvents
+ * belonging to a specific measure for on-demand caching
+ *
+ * @param aMeasure {int} the measure containing the events we'd like to precache
+ */
+void SequencerAPI::cacheAudioEventsForMeasure( int aMeasure )
+{
+    int startBufferPos = AudioEngine::bytes_per_bar * aMeasure;
+    int endBufferPos   = startBufferPos + AudioEngine::bytes_per_bar;
+
+    std::vector<BaseCacheableAudioEvent*>* list = sequencer::collectCacheableSequencerEvents( startBufferPos, endBufferPos );
+    getBulkCacher()->addToQueue( list );
+
+    delete list; // free memory
+
+    if ( getBulkCacher()->hasQueue())
+        getBulkCacher()->cacheQueue();
+}
+
+BulkCacher* SequencerAPI::getBulkCacher()
+{
+    return sequencer::bulkCacher;
+}
+
+/**
+ * when bouncing, the writing of buffers into the hardware is omitted
+ * for an increase in bouncing speed (otherwise its real time)
+ */
+void SequencerAPI::setBounceState( bool aIsBouncing, int aMaxBuffers, char* aOutputDirectory )
+{
+    AudioEngine::bouncing = aIsBouncing;
+
+    if ( AudioEngine::bouncing )
+    {
+        AudioEngine::bufferPosition = 0;
+        AudioEngine::stepPosition   = 0;
+    }
+    setRecordingState( aIsBouncing, aMaxBuffers, aOutputDirectory );
+}
+
+/**
+ * record the output of the sequencer
+ *
+ * aRecording        {bool} toggles the recording state
+ * aMaxBuffers        {int} the maximum amount of buffers (each will hold BUFFER_SIZE in length) to store
+ *                          before broadcasting the RECORDING_UPDATE message back via the JNI
+ * aOutputDirectory {char*} name of the folder to write int
+ */
+void SequencerAPI::setRecordingState( bool aRecording, int aMaxBuffers, char* aOutputDirectory )
+{
+    bool wasRecording         = AudioEngine::recordOutput;
+    AudioEngine::recordOutput = aRecording;
+
+    if ( AudioEngine::recordOutput )
+    {
+        DiskWriter::prepare( std::string( aOutputDirectory ), aMaxBuffers, AudioEngineProps::OUTPUT_CHANNELS );
+    }
+    else
+    {
+        if ( wasRecording )
+        {
+            if ( !AudioEngine::playing )
+            {
+                DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, AudioEngineProps::OUTPUT_CHANNELS, true );
+            }
+            else {
+                // apparently renderer is stopped before cycle completes next Disk Writing query... =/
+                DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, AudioEngineProps::OUTPUT_CHANNELS, true );
+                AudioEngine::haltRecording = true;
+            }
+        }
+    }
+    AudioEngine::recordingFileId = 0;  // write existing buffers using previous iteration before resetting this counter!!
+}
+
+/**
+ * record audio from the Androids input
+ *
+ * aRecording        {bool} toggles the recording state
+ * aMaxBuffers        {int} the maximum amount of buffers (each will hold BUFFER_SIZE in length) to store
+ *                          before broadcasting the RECORDING_UPDATE message back via the JNI
+ * aOutputDirectory {char*} name of the folder to write int
+ */
+void SequencerAPI::setRecordingFromDeviceState( bool aRecording, int aMaxBuffers, char* aOutputDirectory )
+{
+    bool wasRecording              = AudioEngine::recordFromDevice;
+    AudioEngine::recordFromDevice  = aRecording;
+
+    if ( AudioEngine::recordFromDevice )
+    {
+        // diskwriter is a static instance currently (see Java CacheWriter/Readers), so we
+        // must halt recording of live output when recording from the Android device
+        if ( AudioEngine::recordOutput )
+        {
+            setRecordingState( false, 0, "" );
+        }
+        DiskWriter::prepare( std::string( aOutputDirectory ), aMaxBuffers, AudioEngineProps::INPUT_CHANNELS );
+    }
+    else
+    {
+        if ( wasRecording )
+        {
+            if ( !AudioEngine::playing )
+            {
+                DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, AudioEngineProps::INPUT_CHANNELS, true );
+            }
+            else {
+                // apparently renderer is stopped before cycle completes next Disk Writing query... =/
+                DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, AudioEngineProps::INPUT_CHANNELS, true );
+                AudioEngine::haltRecording = true;
+            }
+        }
+    }
+    AudioEngine::recordingFileId = 0;  // write existing buffers using previous iteration before resetting this counter!!
+}

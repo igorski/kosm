@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Box2D">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/Android project/lib/jbox2d.jar!/" />
+    </SOURCES>
+  </library>
+</component>

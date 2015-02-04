@@ -1,0 +1,9 @@
+# view AndroidManifest.xml #generated:26
+-keep class nl.igorski.kosm.Bootstrap { <init>(...); }
+
+# view AndroidManifest.xml #generated:37
+-keep class nl.igorski.kosm.activities.Kosm { <init>(...); }
+
+# view res/layout/main.xml #generated:7
+-keep class nl.igorski.kosm.view.ParticleSequencer { <init>(...); }
+
