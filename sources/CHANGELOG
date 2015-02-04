@@ -1,3 +1,7 @@
+versionName 2.0.3
+ - added support for Intel and MIPS CPU architectures
+ - blended legacy filters in formant filter mode
+
 versionName 2.0.1
  - implemented low latency audio engine
  - removed 2 minute limit on recordings

@@ -21,6 +21,7 @@ import nl.igorski.kosm.model.vo.ParticleEmitterVO;
 import nl.igorski.kosm.model.vo.VOSetting;
 import nl.igorski.kosm.util.cache.CacheWriter;
 import nl.igorski.kosm.view.physics.components.ParticleEmitter;
+import nl.igorski.lib.audio.definitions.AudioConstants;
 import nl.igorski.lib.audio.helpers.DevicePropertyCalculator;
 import nl.igorski.lib.audio.interfaces.ISequencer;
 import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
@@ -80,6 +81,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
 
     public static MWProcessingChain  masterBus;   // strong reference to avoid C++ destructors being invoked
     private KosmInstruments         _instruments; // strong reference to avoid C++ destructors being invoked
+    private MWProcessingChain       _filterBus;
+    private MWProcessingChain       _formantBus;
     private Vector<AudioParticle>   _particles;
     private Vector<ParticleEmitter> _emitters;
 
@@ -123,6 +126,9 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         _particles   = new Vector<AudioParticle>();
         _emitters    = new Vector<ParticleEmitter>();
         _instruments = new KosmInstruments( this );
+
+        _formantBus  = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_KICK ).processingChain;
+        _filterBus = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_SINE ).processingChain;
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
@@ -484,7 +490,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         {
             public void onClick( View v )
             {
-                Core.notify( new ToggleFilterCommand(), masterBus );
+                Core.notify( new ToggleFilterCommand() );
             }
         });
     }
@@ -672,11 +678,11 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             if ( masterBus.delayActive )
                 masterBus.delay.setFeedback(( float ) accelerometerScaler( pitch ));
 
-            if ( masterBus.formantActive )
-                masterBus.formant.setVowel( Math.round( accelerometerScaler( roll ) * 4d ));
+            if ( _formantBus.formantActive )
+                _formantBus.formant.setVowel( Math.round( accelerometerScaler( roll ) * 4d ));
 
-           // if ( masterBus.filterActive )
-           //     masterBus.filter.setCutoff(( float ) accelerometerScaler( roll ) * AudioConstants.FILTER_MAX_FREQ );
+            if ( _filterBus.filterActive )
+                _filterBus.filter.setCutoff(( float ) accelerometerScaler( roll ) * AudioConstants.FILTER_MAX_FREQ );
 
             if ( masterBus.bitCrusherActive )
                 masterBus.bitCrusher.setAmount(( float ) accelerometerScaler( azimuth ));
