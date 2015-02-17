@@ -84,6 +84,7 @@ public class OpenWaveformMenuCommand extends BaseAsyncCommand
         public void onEvent( int i, BaseTween<?> baseTween )
         {
             DebugTool.log( "MENU ANI COMPLETE" );
+
             animationLocked         = false;
             Kosm.waveformMenuOpened = true;
             commandComplete();
