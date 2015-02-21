@@ -5,6 +5,7 @@ obj/local/armeabi-v7a/objs/mwengine/opensl_io.o: jni/opensl_io.c \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES_Android.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES_AndroidConfiguration.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES_AndroidMetadata.h \
+ /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/pthread.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/time.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/cdefs.h \
@@ -15,6 +16,7 @@ obj/local/armeabi-v7a/objs/mwengine/opensl_io.o: jni/opensl_io.c \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/stdint.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/_types.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/machine/_types.h \
+ /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/_wchar_limits.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/linux/posix_types.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/linux/stddef.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/linux/compiler.h \
@@ -39,6 +41,8 @@ obj/local/armeabi-v7a/objs/mwengine/opensl_io.o: jni/opensl_io.c \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm/signal.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm-generic/signal.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm/sigcontext.h \
+ /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/ucontext.h \
+ /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/user.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sched.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/stdlib.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/alloca.h \
@@ -56,6 +60,8 @@ jni/opensl_io.h:
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES_AndroidConfiguration.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES_AndroidMetadata.h:
+
+/Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/SLES/OpenSLES.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/pthread.h:
 
@@ -76,6 +82,8 @@ jni/opensl_io.h:
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/_types.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/machine/_types.h:
+
+/Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/_wchar_limits.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/linux/posix_types.h:
 
@@ -124,6 +132,10 @@ jni/opensl_io.h:
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm-generic/signal.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm/sigcontext.h:
+
+/Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/ucontext.h:
+
+/Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/user.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sched.h:
 

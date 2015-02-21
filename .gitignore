@@ -4,9 +4,9 @@ intelliJ project/
 .iml
 .idea
 build/
-sources/obj/
-sources/bin/
-sources/gen/
+sources/obj/*
+sources/bin/*
+sources/gen/*
 sources/libs/armeabi/
 sources/libs/armeabi-v7a/
 sources/libs/x86/

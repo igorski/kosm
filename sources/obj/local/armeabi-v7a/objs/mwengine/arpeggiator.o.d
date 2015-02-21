@@ -23,9 +23,9 @@ obj/local/armeabi-v7a/objs/mwengine/arpeggiator.o: jni/arpeggiator.cpp \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/machine/limits.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/sys/syslimits.h \
  /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm/page.h \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/sstream \
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/sstream \
  jni/global.h \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/cmath
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath
 
 jni/arpeggiator.h:
 
@@ -77,8 +77,8 @@ jni/utilities/utils.h:
 
 /Library/AndroidNDK/platforms/android-14/arch-arm/usr/include/asm/page.h:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/sstream:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/sstream:
 
 jni/global.h:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/cmath:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath:

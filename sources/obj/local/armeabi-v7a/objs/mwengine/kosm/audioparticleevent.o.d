@@ -3,8 +3,8 @@ obj/local/armeabi-v7a/objs/mwengine/kosm/audioparticleevent.o: \
  jni/events/synthevent.h jni/events/basesynthevent.h \
  jni/events/basecacheableaudioevent.h jni/events/baseaudioevent.h \
  jni/events/../audiobuffer.h jni/events/../global.h \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/cmath \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/vector \
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath \
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/vector \
  jni/events/../adsr.h jni/events/../audiobuffer.h jni/events/../global.h \
  jni/instruments/synthinstrument.h jni/instruments/baseinstrument.h \
  jni/instruments/../audiochannel.h jni/instruments/../audiobuffer.h \
@@ -20,8 +20,8 @@ obj/local/armeabi-v7a/objs/mwengine/kosm/audioparticleevent.o: \
  jni/audiobuffer.h jni/audiochannel.h jni/global.h jni/processingchain.h \
  jni/events/drumevent.h jni/events/sampleevent.h \
  jni/instruments/baseinstrument.h \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/string \
- /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/limits
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/string \
+ /Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/limits
 
 jni/kosm/audioparticleevent.h:
 
@@ -37,9 +37,9 @@ jni/events/../audiobuffer.h:
 
 jni/events/../global.h:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/cmath:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/cmath:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/vector:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/vector:
 
 jni/events/../adsr.h:
 
@@ -97,6 +97,6 @@ jni/events/sampleevent.h:
 
 jni/instruments/baseinstrument.h:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/string:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/string:
 
-/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.6/include/limits:
+/Library/AndroidNDK/sources/cxx-stl/gnu-libstdc++/4.8/include/limits:

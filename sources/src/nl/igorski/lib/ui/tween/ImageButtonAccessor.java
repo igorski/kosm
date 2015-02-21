@@ -3,6 +3,7 @@ package nl.igorski.lib.ui.tween;
 import android.widget.ImageButton;
 import aurelienribon.tweenengine.TweenAccessor;
 import nl.igorski.lib.animation.enums.AnimationProps;
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,20 +23,20 @@ public class ImageButtonAccessor implements TweenAccessor<ImageButton>
         switch( tweenType )
         {
             case AnimationProps.POSITION_X:
-                returnValues[ 0 ] = target.getTranslationX();
+                returnValues[ 0 ] = ViewHelper.getTranslationX(target);
                 return 1;
 
             case AnimationProps.POSITION_Y:
-                returnValues[ 0 ] = target.getTranslationY();
+                returnValues[ 0 ] = ViewHelper.getTranslationY(target);
                 return 1;
 
             case AnimationProps.POSITION_XY:
-                returnValues[ 0 ] = target.getTranslationX();
-                returnValues[ 1 ] = target.getTranslationY();
+                returnValues[ 0 ] = ViewHelper.getTranslationX(target);
+                returnValues[ 1 ] = ViewHelper.getTranslationY(target);
                 return 2;
 
             case AnimationProps.ALPHA:
-                returnValues[ 0 ] = ( float ) target.getImageAlpha();
+                returnValues[ 0 ] = ViewHelper.getAlpha( target );
                 return 1;
 
             case AnimationProps.HEIGHT:
@@ -47,7 +48,7 @@ public class ImageButtonAccessor implements TweenAccessor<ImageButton>
                 break;
 
             case AnimationProps.POSITION_X_WIDTH:
-                returnValues[ 0 ] = target.getTranslationX();
+                returnValues[ 0 ] = ViewHelper.getTranslationX( target );
                 returnValues[ 1 ] = ( float ) target.getWidth();
                 break;
 
@@ -63,20 +64,20 @@ public class ImageButtonAccessor implements TweenAccessor<ImageButton>
         switch( tweenType )
         {
             case AnimationProps.POSITION_X:
-                target.setTranslationX( newValues[ 0 ]);
+                ViewHelper.setTranslationX( target, newValues[0]);
                 break;
 
             case AnimationProps.POSITION_Y:
-                target.setTranslationY( newValues[ 0 ]);
+                ViewHelper.setTranslationY( target, newValues[0]);
                 break;
 
             case AnimationProps.POSITION_XY:
-                target.setTranslationX( newValues[ 0 ]);
-                target.setTranslationY( newValues[ 1 ]);
+                ViewHelper.setTranslationX( target, newValues[0]);
+                ViewHelper.setTranslationY( target, newValues[1]);
                 break;
 
             case AnimationProps.ALPHA:
-                target.setImageAlpha(( int ) newValues[ 0 ]);
+                ViewHelper.setAlpha( target, newValues[ 0 ]);
                 break;
 
             case AnimationProps.WIDTH:
@@ -88,7 +89,7 @@ public class ImageButtonAccessor implements TweenAccessor<ImageButton>
                 break;
 
             case AnimationProps.POSITION_X_WIDTH:
-                target.setTranslationX( newValues[ 0 ]);
+                ViewHelper.setTranslationX( target, newValues[ 0 ]);
                 target.setMinimumWidth(( int ) newValues[ 1 ]);
                 break;
 
