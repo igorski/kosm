@@ -122,6 +122,7 @@ public final class Animator
     {
         return _manager;
     }
+
     /**
      * in case of an application with a dedicated render loop, call this update
      * method on each cycle to update the TweenManager (proceeds to next step of

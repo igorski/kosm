@@ -128,7 +128,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         _instruments = new KosmInstruments( this );
 
         _formantBus  = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_KICK ).processingChain;
-        _filterBus = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_SINE ).processingChain;
+        _filterBus   = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_SINE ).processingChain;
 
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
@@ -684,8 +684,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             if ( _filterBus.filterActive )
                 _filterBus.filter.setCutoff(( float ) accelerometerScaler( roll ) * AudioConstants.FILTER_MAX_FREQ );
 
-            if ( masterBus.bitCrusherActive )
-                masterBus.bitCrusher.setAmount(( float ) accelerometerScaler( azimuth ));
+            if ( masterBus.waveshaperActive )
+                masterBus.waveShaper.setAmount(( float ) accelerometerScaler( azimuth ));
         }
     }
 

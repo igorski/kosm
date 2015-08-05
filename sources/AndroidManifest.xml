@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="nl.igorski.kosm"
-      android:versionCode="12"
-      android:versionName="2.0.3">
+      android:versionCode="15"
+      android:versionName="2.0.6">
 
     <!-- support all but the smallest of screens -->
     <supports-screens
@@ -19,6 +19,10 @@
     <!-- required permissions -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- required features -->
+    <uses-feature android:name="android.hardware.sensor.accelerometer" />
+    <uses-feature android:name="android.hardware.sensor.compass" />
 
     <application android:label="@string/app_name"
                  android:icon="@drawable/icon">

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import com.nineoldandroids.view.ViewHelper;
 import nl.igorski.kosm.R;
 import nl.igorski.kosm.controller.menu.CloseEffectsMenuCommand;
 import nl.igorski.kosm.controller.menu.CloseWaveformMenuCommand;
@@ -98,7 +99,7 @@ public class Kosm extends BaseActivity implements ICompleteListener
             }
         });
 
-        btnWaveformToggle.setTranslationX( -btnWaveformToggle.getWidth() / 2 + btnWaveformToggle.getLeft() );
+        ViewHelper.setTranslationX( btnWaveformToggle, -btnWaveformToggle.getWidth() / 2 + btnWaveformToggle.getLeft() );
 
         /* grab references to effects buttons in template */
 

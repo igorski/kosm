@@ -21,7 +21,6 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "javabridge.h"
-#include "audioengine.h"
 #include <string.h>
 
 static JavaVM*  _vm    = 0;
@@ -48,20 +47,20 @@ jint JNI_OnLoad( JavaVM* vm, void* reserved )
  * registers the reference to the JAVA_CLASS (and its host environment)
  * where all subsequent calls will be executed upon, the Java class
  * will only expose static methods for its interface with the native code
- *
- * upon registration the current BUFFER_SIZE will be returned to the JNI
  */
 void JavaBridge::registerInterface( JNIEnv* env, jobject jobj )
 {
-    jclass localRefCls = env->FindClass( JAVA_CLASS );
-    if (localRefCls == NULL) {
+    JNIEnv* environment = getEnvironment(); // always use stored environment reference!
+    jclass localRefCls  = environment->FindClass( JAVA_CLASS );
+
+    if ( localRefCls == NULL )
         return; /* exception thrown */
-    }
+
     /* Create a global reference */
-    _class = ( jclass ) env->NewGlobalRef( localRefCls );
+    _class = ( jclass ) environment->NewGlobalRef( localRefCls );
 
     /* The local reference is no longer useful */
-    env->DeleteLocalRef( localRefCls );
+    environment->DeleteLocalRef( localRefCls );
 
     /* Is the global reference created successfully? */
     if ( _class == NULL) {
@@ -71,7 +70,7 @@ void JavaBridge::registerInterface( JNIEnv* env, jobject jobj )
     jmethodID native_method_id = getJavaMethod( JavaAPIs::REGISTRATION_SUCCESS );
 
     if ( native_method_id != 0 )
-        env->CallStaticVoidMethod( getJavaInterface(), native_method_id, 1 );
+        environment->CallStaticVoidMethod( getJavaInterface(), native_method_id, 1 );
 }
 
 /**
@@ -100,32 +99,24 @@ jmethodID JavaBridge::getJavaMethod( javaAPI aAPImethod )
 {
     jmethodID native_method_id = 0;
     jclass    javaClass        = getJavaInterface();
+    JNIEnv*   environment      = getEnvironment();
 
-    if ( javaClass != 0 )
-        native_method_id = getEnvironment()->GetStaticMethodID( javaClass, aAPImethod.method, aAPImethod.signature );
+    if ( javaClass != 0 && environment != 0 )
+        native_method_id = environment->GetStaticMethodID( javaClass, aAPImethod.method, aAPImethod.signature );
 
     return native_method_id;
 }
 
 jclass JavaBridge::getJavaInterface()
 {
-    JNIEnv *env = getEnvironment();
+    JNIEnv *environment = getEnvironment();
 
     // might as well return as subsequent usage of
     // the interface requires a valid environment for it's invocation!
-    if ( env == 0 )
+    if ( environment == 0 )
         return 0;
 
     return _class; // we have a cached reference!
-
-    /*
-    jclass javaClass = env->FindClass( JAVA_CLASS );
-
-    if ( javaClass != 0 )
-        return javaClass;
-    else
-        return 0;
-    */
 }
 
 JNIEnv* JavaBridge::getEnvironment()
@@ -133,14 +124,12 @@ JNIEnv* JavaBridge::getEnvironment()
     JNIEnv *env;
     jint rs = _vm->AttachCurrentThread( &env, NULL );
 
+    // no need to detach after this call as this will be a repeated
+    // invocation for communication from C(++) to Java
+    // trying to attach a thread that is already attached is a no-op.
+
     if ( rs == JNI_OK )
         return env;
     else
         return 0;
-    /*
-    JNIEnv* env;
-    ( getVM() )->GetEnv(( void** ) &env, JNI_VERSION_1_6 );
-
-    return env;
-    */
 }
