@@ -24,13 +24,13 @@ public class ToggleDistortionCommand extends BaseSimpleCommand
         DebugTool.log( "TOGGLE DISTORTION COMMAND" );
 
         final MWProcessingChain processingChain = (( MWProcessingChain ) aNote.getBody() );
-        final boolean activated = !processingChain.bitCrusherActive;
+        final boolean activated = !processingChain.waveshaperActive;
         
-        if ( !processingChain.bitCrusherActive )
+        if ( !processingChain.waveshaperActive )
         {
-            processingChain.bitCrusher = ProcessorFactory.createBitCrusher( processingChain );
+            processingChain.waveShaper = ProcessorFactory.createWaveShaper( processingChain );
         }
-        processingChain.bitCrusherActive = activated;
+        processingChain.waveshaperActive = activated;
         processingChain.cacheActiveProcessors();
 
         final int buttonResourceId = activated ? R.drawable.icon_distortion_active : R.drawable.icon_distortion;

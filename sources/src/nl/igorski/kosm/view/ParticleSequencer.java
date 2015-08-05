@@ -684,8 +684,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             if ( _filterBus.filterActive )
                 _filterBus.filter.setCutoff(( float ) accelerometerScaler( roll ) * AudioConstants.FILTER_MAX_FREQ );
 
-            if ( masterBus.bitCrusherActive )
-                masterBus.bitCrusher.setAmount(( float ) accelerometerScaler( azimuth ));
+            if ( masterBus.waveshaperActive )
+                masterBus.waveShaper.setAmount(( float ) accelerometerScaler( azimuth ));
         }
     }
 
