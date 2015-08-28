@@ -12,6 +12,7 @@ later stage improvements:
 
 temporarily increase delay feedback upon collision ?
 introduce glitch effect ?
+pitchshifting ? (for doppler esque effects)
 add buffer size menu ?
 
 ---
