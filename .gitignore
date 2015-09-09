@@ -4,10 +4,10 @@ intelliJ project/
 .iml
 .idea
 build/
-sources/obj/*
-sources/bin/*
-sources/gen/*
-sources/libs/armeabi/*
-sources/libs/armeabi-v7a/*
-sources/libs/x86/*
-sources/libs/mips/*
+obj/
+bin/
+gen/
+libs/armeabi/*
+libs/armeabi-v7a/*
+libs/x86/*
+libs/mips/*
