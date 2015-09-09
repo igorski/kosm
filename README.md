@@ -20,6 +20,12 @@ https://github.com/igorski/MWEngine
 Kosm uses a custom extension of the basic MWEngine classes (although a cleanup is pending!). See the
 _/jni/kosm_-folder for the rendering of AudioParticleEvents.
 
+### APE Physics engine
+
+Kosm relies on the APE physics engine and uses a modified version of the Android version. Sadly, the
+original Android library doesn't seem to be maintained anymore (the old Subversion repository on Google Code
+has been migrated to Github though : https://github.com/msoftware/ape-physics-for-android)
+
 ### Build instructions
 
 You will need both the Android SDK and the Android NDK installed. The Android NDK is used to compile the

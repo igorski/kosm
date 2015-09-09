@@ -24,7 +24,6 @@ import nl.igorski.kosm.view.physics.components.ParticleEmitter;
 import nl.igorski.lib.audio.definitions.AudioConstants;
 import nl.igorski.lib.audio.definitions.WaveTables;
 import nl.igorski.lib.audio.helpers.DevicePropertyCalculator;
-import nl.igorski.lib.audio.interfaces.ISequencer;
 import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
 import nl.igorski.lib.audio.MWEngine;
 import nl.igorski.lib.audio.nativeaudio.JavaUtilities;
