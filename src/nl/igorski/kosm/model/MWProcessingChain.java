@@ -1,7 +1,7 @@
-package nl.igorski.kosm.audio;
+package nl.igorski.kosm.model;
 
 import nl.igorski.lib.audio.nativeaudio.*;
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 
 /**
  * Created with IntelliJ IDEA.
@@ -98,7 +98,7 @@ public final class MWProcessingChain
     {
         _chain = aNativeProcessingChain;
         
-        filterCutoff    = NativeAudioRenderer.SAMPLE_RATE / 4;
+        filterCutoff    = MWEngine.SAMPLE_RATE / 4;
         filterResonance = ( float )( Math.sqrt( 1 ) / 2 );
         filterFormant   = 0;
 
@@ -121,7 +121,7 @@ public final class MWProcessingChain
         cGain           = 15.0f;
         cRatio          = 1.2f;
 
-        lpfCutoff = NativeAudioRenderer.SAMPLE_RATE;
+        lpfCutoff = MWEngine.SAMPLE_RATE;
         hpfCutoff = 5;
     }
 

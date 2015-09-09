@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,30 +20,33 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "tablepool.h"
-#include <generators/wavegenerator.h>
+#ifndef JAVABRIDGE_API_H_INCLUDED
+#define JAVABRIDGE_API_H_INCLUDED
 
-namespace TablePool
+#include <jni/javabridge.h>
+#include "processingchain.h"
+
+/**
+ * javabridge_api.h is used to establish a two-way communication (together with javabridge.h)
+ * to allow the AudioEngine to send messages to the Java VM, if you do not need
+ * to send messages TO Java and are using the engine only in a native environment,
+ * simple omit adding this header file in the "native_audio_lib.i"-file which
+ * describes the SWIG-enabled classes for the JNI environment
+ */
+
+/**
+ * these are the same methods as declared in the AudioEngine namespace, but
+ * re-declared so we can call them from Java without having to resort to
+ * go through a lot of trouble declaring the JNIEnv* en jobject arguments
+ * which otherwise wouldn't survive the SWIG wrapping...
+ */
+extern "C"
 {
-    std::map<int, WaveTable*> _cachedTables;
-
-    void getTable( WaveTable* waveTable, int waveformType )
-    {
-        std::map<int, WaveTable*>::iterator it = _cachedTables.find( waveformType );
-
-        if ( it != _cachedTables.end())
-        {
-            // table existed, load the pooled version
-            waveTable->cloneTable(( WaveTable* )( it->second ));
-        }
-        else
-        {
-            // wave table hasn't been generated yet ? generate its contents on the fly
-            if ( !waveTable->hasContent() )
-                WaveGenerator::generate( waveTable, waveformType );
-
-            // insert a clone of the generated table into the pools table map
-            _cachedTables.insert( std::pair<int, WaveTable*>( waveformType, waveTable->clone() ));
-        }
-    }
+    void init();
+    void start();
+    void stop();
+    void reset();
+    ProcessingChain* getMasterBusProcessors();
 }
+
+#endif

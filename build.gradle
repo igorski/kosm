@@ -1,5 +1,5 @@
 import org.ajoberstar.grgit.*
-apply plugin: 'java'
+apply plugin: 'com.android.application'
 
 defaultTasks 'clean', 'build'
 

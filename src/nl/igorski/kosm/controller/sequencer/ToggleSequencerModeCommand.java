@@ -2,9 +2,9 @@ package nl.igorski.kosm.controller.sequencer;
 
 import android.widget.Button;
 import nl.igorski.kosm.R;
-import nl.igorski.kosm.activities.Kosm;
+import nl.igorski.kosm.Kosm;
 import nl.igorski.kosm.definitions.SequencerModes;
-import nl.igorski.kosm.renderers.ViewRenderer;
+import nl.igorski.kosm.view.ui.ViewRenderer;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;

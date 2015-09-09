@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import nl.igorski.kosm.activities.Kosm;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.time.Timeout;
 import nl.igorski.lib.utils.time.interfaces.ITimeoutHandler;

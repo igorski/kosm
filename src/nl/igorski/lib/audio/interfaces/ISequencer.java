@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.interfaces;
 
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,7 +60,7 @@ public interface ISequencer
      */
     public void handleRecordingUpdate( boolean aIsComplete, int aRecordingFileNum );
 
-    public NativeAudioRenderer getRenderer();
+    public MWEngine getAudioEngine();
 
     public boolean usePrecaching();
 

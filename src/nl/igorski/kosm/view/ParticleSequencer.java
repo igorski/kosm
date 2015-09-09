@@ -4,7 +4,7 @@ import android.content.DialogInterface;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.config.Config;
 import nl.igorski.kosm.controller.effects.ToggleDelayCommand;
 import nl.igorski.kosm.controller.effects.ToggleDistortionCommand;
@@ -22,17 +22,20 @@ import nl.igorski.kosm.model.vo.VOSetting;
 import nl.igorski.kosm.util.cache.CacheWriter;
 import nl.igorski.kosm.view.physics.components.ParticleEmitter;
 import nl.igorski.lib.audio.definitions.AudioConstants;
+import nl.igorski.lib.audio.definitions.WaveTables;
 import nl.igorski.lib.audio.helpers.DevicePropertyCalculator;
 import nl.igorski.lib.audio.interfaces.ISequencer;
 import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.lib.audio.nativeaudio.JavaUtilities;
+import nl.igorski.lib.audio.nativeaudio.Notifications;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.framework.Core;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.math.MathTool;
 import nl.igorski.kosm.R;
 import nl.igorski.kosm.definitions.ParticleSounds;
-import nl.igorski.kosm.renderers.ViewRenderer;
+import nl.igorski.kosm.view.ui.ViewRenderer;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -51,12 +54,12 @@ import java.io.File;
 import java.util.Vector;
 
 public final class ParticleSequencer extends SurfaceView implements SurfaceHolder.Callback, SensorEventListener,
-                                                                    ISequencer, IUpdateableInstrument
+                                                                    IUpdateableInstrument
 {
     /* threads */
 
-    private ViewRenderer        _ui;
-    private NativeAudioRenderer _audio;
+    private ViewRenderer _renderer;
+    private MWEngine     _mwengine;
 
     public boolean threadsActive = false;
 
@@ -149,14 +152,14 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
 
     /* public methods */
 
-    public NativeAudioRenderer getRenderer()
+    public MWEngine getAudioEngine()
     {
-        return _audio;
+        return _mwengine;
     }
 
     public ViewRenderer getViewRenderer()
     {
-        return _ui;
+        return _renderer;
     }
 
     public boolean usePrecaching()
@@ -216,12 +219,72 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             if ( !Config.canRecord())
             {
                 // altering button image throws exception when executed from outside thread !!
-                _audio.setRecordingState( false, "" );
+                _mwengine.setRecordingState(false, "");
                 requestRecordingSave    ( false );
             }
         }
         else {
             requestRecordingSave( true );
+        }
+    }
+
+    /* internal class : monitors state changes of the audio engine */
+
+    private class StateObserver implements MWEngine.IObserver
+    {
+        // cache the enumerations (from native layer) as integer Array
+
+        private final Notifications.ids[] _notificationEnums = Notifications.ids.values();
+
+        public void handleNotification( int aNotificationId )
+        {
+            switch ( _notificationEnums[ aNotificationId ])
+            {
+                case ERROR_HARDWARE_UNAVAILABLE:
+
+                    DebugTool.log( "NativeAudioRenderer::ERROR > received Open SL error callback from native layer" );
+
+                    // re-initialize thread
+
+                    if ( _mwengine.canRestartEngine() )
+                    {
+                        _mwengine.dispose();
+                        _mwengine.createOutput( MWEngine.SAMPLE_RATE,
+                                             MWEngine.BUFFER_SIZE );
+                        _mwengine.start();
+                    }
+                    else {
+                        DebugTool.log( "exceeded maximum amount of retries. Cannot continue using Mikrowave..." );
+                    }
+                    break;
+
+                case ERROR_THREAD_START:
+
+                    DebugTool.log( "MWEngine PANIC :: could not start engine" );
+                    handleEnginePanic();
+                    break;
+
+                case STATUS_BRIDGE_CONNECTED:
+
+                    // see enumerated WaveForms (global.h) and WAVE_TABLE_PRECISION (lfo.h)
+                    JavaUtilities.cacheTable( WaveTables.SINE.length,     0, WaveTables.SINE );
+                    JavaUtilities.cacheTable( WaveTables.TRIANGLE.length, 1, WaveTables.TRIANGLE);
+                    JavaUtilities.cacheTable( WaveTables.SAWTOOTH.length, 2, WaveTables.SAWTOOTH);
+                    JavaUtilities.cacheTable( WaveTables.SQUARE.length,   3, WaveTables.SQUARE );
+
+                    DebugTool.log( "CACHED WAVE TABLES" );
+                    break;
+            }
+        }
+
+        public void handleNotification( int aNotificationId, int aNotificationValue )
+        {
+//            switch ( _notificationEnums[ aNotificationId ])
+//            {
+//                case SEQUENCER_POSITION_UPDATED:
+//                    Log.d( LOG_TAG, "sequencer position : " + aNotificationValue );
+//                    break;
+//            }
         }
     }
 
@@ -340,7 +403,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             @Override
             public void onClick( View v )
             {
-                final boolean newRecordingState = !_audio.getRecordingState();
+                final boolean newRecordingState = !_mwengine.getRecordingState();
 
                 if ( !newRecordingState ) // stop recording
                 {
@@ -365,7 +428,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
                         createRecording();
                     }
                 }
-                _audio.setRecordingState( newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator );
+                _mwengine.setRecordingState(newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator);
             }
         });
     }
@@ -508,7 +571,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     @Override
     public boolean onKeyDown( int keyCode, KeyEvent msg )
     {
-        return _ui.doKeyDown( keyCode, msg );
+        return _renderer.doKeyDown( keyCode, msg );
     }
 
     /**
@@ -518,13 +581,13 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     @Override
     public boolean onKeyUp( int keyCode, KeyEvent msg )
     {
-        return _ui.doKeyUp( keyCode, msg );
+        return _renderer.doKeyUp( keyCode, msg );
     }
 
     @Override
     public boolean onTouchEvent( MotionEvent e )
     {
-        return _ui.handleTouchEvent( e );
+        return _renderer.handleTouchEvent( e );
     }
 
     /**
@@ -546,8 +609,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     /* Callback invoked when the surface dimensions change. */
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height )
     {
-        if ( _ui != null )
-            _ui.setSurfaceSize( width, height );
+        if ( _renderer != null )
+            _renderer.setSurfaceSize( width, height );
     }
 
     /*
@@ -566,8 +629,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
      */
     public void surfaceDestroyed( SurfaceHolder holder )
     {
-        _ui.pause();
-        _audio.pause();
+        _renderer.pause();
+        _mwengine.pause();
     }
 
     public void onAccuracyChanged( Sensor arg0, int arg1 )
@@ -693,7 +756,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         // note the Object pooling
 
-        _ui = new ViewRenderer( getHolder(), this, getContext(), new Handler()
+        _renderer = new ViewRenderer( getHolder(), this, getContext(), new Handler()
         {
             @Override
             public void handleMessage( Message m )
@@ -702,11 +765,11 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             }
         });
 
-        _ui.start();
+        _renderer.start();
 
-        if ( _audio == null )
+        if ( _mwengine == null )
         {
-            _audio = new NativeAudioRenderer( getContext(), this );
+            _mwengine = new MWEngine( getContext(), new StateObserver() );
 
             // note we only invoke the starting of the engine on actual creation, when restoring
             // threads (window focus change?) keep in mind the audio engine is Object pooled
@@ -715,8 +778,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         }
         else
         {
-            if ( _audio.isPaused())
-                _audio.start(); // necessary when returning from SongExport
+            if ( _mwengine.isPaused())
+                _mwengine.start(); // necessary when returning from SongExport
         }
     }
 
@@ -762,15 +825,15 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         final int sampleRate = DevicePropertyCalculator.getRecommendedSampleRate( context );
 
         // create new audio output
-        if ( outputCreation || NativeAudioRenderer.BUFFER_SIZE != bufferSize || NativeAudioRenderer.SAMPLE_RATE != sampleRate )
-            _audio.createOutput( sampleRate, KosmConstants.BUFFER_SIZE );
+        if ( outputCreation || MWEngine.BUFFER_SIZE != bufferSize || MWEngine.SAMPLE_RATE != sampleRate )
+            _mwengine.createOutput( sampleRate, KosmConstants.BUFFER_SIZE );
 
-        _audio.updateMeasures( 1 ); // just one
+        _mwengine.getSequencerController().updateMeasures( 1, getStepsPerBar() ); // just one
         Core.notify( new CreateMasterBusCommand());
 
         // start / unpause thread (if thread was initialized and started previously)
-        _audio.start();
-        _audio.setPlaying( true ); // sequencer is always running in Kosm (otherwise no recording occurs!!)
+        _mwengine.start();
+        _mwengine.getSequencerController().setPlaying( true ); // sequencer is always running in Kosm (otherwise no recording occurs!!)
     }
     
     /* suspending the app */
@@ -779,8 +842,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         DebugTool.log("Sequencer::pauseThreads()");
 
-        _ui.pause();
-        _audio.pause();
+        _renderer.pause();
+        _mwengine.pause();
 
         threadsActive = false;
     }
@@ -790,8 +853,8 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         DebugTool.log( "Sequencer::destroyThreads()" );
 
-        _ui.dispose();
-        _audio.dispose();
+        _renderer.dispose();
+        _mwengine.dispose();
 
         threadsActive = false;
     }

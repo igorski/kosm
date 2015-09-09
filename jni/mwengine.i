@@ -2,13 +2,15 @@
  * this file describes which native classes will
  * be made available to the Java using a SWIG wrapper
  * note the audio engine itself is not directly available
- * but only through javajni.h and sequencer_api.h
+ * but only through javajni.h and sequencercontroller.h
  */
-%module NativeAudioEngine
+%module MWEngineCore
 
 %{
-#include "javabridge_api.h"
-#include "utilities/jnisamplemanager.h"
+#include "jni/javabridge_api.h"
+#include "jni/javautilities.h"
+#include "definitions/notifications.h"
+#include "definitions/waveforms.h"
 #include "adsr.h"
 #include "arpeggiator.h"
 #include "audiochannel.h"
@@ -40,7 +42,7 @@
 #include "events/drumevent.h"
 #include "events/basesynthevent.h"
 #include "events/synthevent.h"
-#include "sequencer_api.h"
+#include "sequencercontroller.h"
 #include "kosm/audioparticleevent.h"
 %}
 
@@ -56,10 +58,17 @@
     }
   }
 %}
+
+// JNI specific wrappers for passing data types from Java to C++
+%include "enums.swg"               // will convert enumerations to Java enums
 %include carrays.i                 // enable passing of arrays via JNI
 %array_functions(int, int_array)   // int arrays
-%include "javabridge_api.h"
-%include "utilities/jnisamplemanager.h"
+%include "std_string.i"            // enables using Java Strings as std::string
+
+%include "jni/javabridge_api.h"
+%include "jni/javautilities.h"
+%include "definitions/notifications.h"
+%include "definitions/waveforms.h"
 %include "adsr.h"
 %include "arpeggiator.h"
 %include "audiochannel.h"
@@ -83,7 +92,6 @@
 %include "utilities/bulkcacher.h"
 %include "drumpattern.h"
 %include "routeableoscillator.h"
-%include "utilities/samplemanager.h"
 %include "instruments/baseinstrument.h"
 %include "instruments/druminstrument.h"
 %include "instruments/synthinstrument.h"
@@ -93,5 +101,5 @@
 %include "events/sampleevent.h"
 %include "events/drumevent.h"
 %include "events/synthevent.h"
-%include "sequencer_api.h"
+%include "sequencercontroller.h"
 %include "kosm/audioparticleevent.h"

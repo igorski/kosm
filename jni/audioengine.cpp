@@ -26,11 +26,19 @@
 #include "processingchain.h"
 #include "sequencer.h"
 #include "opensl_io.h"
-#include "observer.h"
+#include <definitions/notifications.h>
+#include <messaging/notifier.h>
 #include <events/baseaudioevent.h>
 #include <utilities/diskwriter.h>
 #include <utilities/utils.h>
 #include <vector>
+
+#ifdef USE_JNI
+
+#include <jni.h>
+#include <jni/javabridge.h>
+
+#endif
 
 namespace AudioEngine
 {
@@ -38,12 +46,13 @@ namespace AudioEngine
     int bytes_per_bar;
     int bytes_per_tick;
 
-    int amount_of_bars      = 1;
-    int beat_subdivision    = 4;
-    int min_buffer_position = 0; // initially 0, but can differ when looping specific measures
-    int max_buffer_position = 0; // calculated when sequencer API creates output
-    int min_step_position   = 0;
-    int max_step_position   = 16;
+    int amount_of_bars         = 1;
+    int beat_subdivision       = 4;
+    int min_buffer_position    = 0;  // initially 0, but can differ when looping specific measures
+    int max_buffer_position    = 0;  // calculated when sequencer API creates output
+    int marked_buffer_position = -1; // -1 means no marker has been set, no notifications will go out
+    int min_step_position      = 0;
+    int max_step_position      = 16;
 
     bool playing          = false;
     bool recordOutput     = false;
@@ -89,7 +98,7 @@ namespace AudioEngine
         // hardware unavailable ? halt thread, trigger JNI callback for error handler
         if ( p == NULL )
         {
-            Observer::handleHardwareUnavailable();
+            Notifier::broadcast( Notifications::ERROR_HARDWARE_UNAVAILABLE );
             return;
         }
         // audio hardware available, start render thread
@@ -135,10 +144,10 @@ namespace AudioEngine
                 // were we bouncing the audio ? save file and stop rendering
                 if ( bouncing )
                 {
-                    DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, AudioEngineProps::OUTPUT_CHANNELS, false );
+                    DiskWriter::writeBufferToFile( AudioEngineProps::SAMPLE_RATE, outputChannels, false );
 
                     // broadcast update via JNI, pass buffer identifier name to identify last recording
-                    Observer::handleBounceComplete( 1 );
+                    Notifier::broadcast( Notifications::BOUNCE_COMPLETE, 1 );
                     thread = 0; // stop thread, halts rendering
                     break;
                 }
@@ -192,8 +201,8 @@ namespace AudioEngine
                 // clear previous channel buffer content
                 channelBuffer->silenceBuffers();
 
-                bool useChannelRange    = channel->maxBufferPosition != 0; // channel has its own buffer range (i.e. drummachine)
-                int maxBufferPosition   = useChannelRange ? channel->maxBufferPosition : max_buffer_position;
+                bool useChannelRange  = channel->maxBufferPosition != 0; // channel has its own buffer range (i.e. drummachine)
+                int maxBufferPosition = useChannelRange ? channel->maxBufferPosition : max_buffer_position;
 
                 // we make a copy of the current buffer position indicator
                 int bufferPos = bufferPosition;
@@ -215,7 +224,7 @@ namespace AudioEngine
                         {
                             BaseAudioEvent* audioEvent = audioEvents[ k ];
 
-                            if ( audioEvent != 0 && !audioEvent->isLocked())   // make sure we are allowed to query the contents
+                            if ( audioEvent != 0 && !audioEvent->isLocked()) // make sure we're allowed to query the contents
                             {
                                 audioEvent->mixBuffer( channelBuffer, bufferPos, min_buffer_position,
                                                        maxBufferPosition, loopStarted, loopOffset, useChannelRange );
@@ -301,7 +310,7 @@ namespace AudioEngine
                     else if ( sample > +MAX_PHASE )
                         sample = +MAX_PHASE;
 
-                    outbuffer[ c + ci ] = sample;
+                    outbuffer[ c + ci ] = sample; // interleaved output
                 }
 
                 // update the buffer pointers and sequencer position
@@ -312,12 +321,16 @@ namespace AudioEngine
 
                     if ( bufferPosition >= max_buffer_position )
                         bufferPosition = min_buffer_position;
+
+                    if ( marked_buffer_position != 1 &&
+                         bufferPosition == marked_buffer_position )
+                         Notifier::broadcast( Notifications::MARKER_POSITION_REACHED );
                }
             }
             // render the buffer in the audio hardware (unless we're bouncing as writing the output
             // makes it both unnecessarily audible and stalls this thread's execution
             if ( !bouncing )
-                android_AudioOut( p, outbuffer, bufferSize * AudioEngineProps::OUTPUT_CHANNELS );
+                android_AudioOut( p, outbuffer, bufferSize * outputChannels );
 
             // record the output if recording state is active
             if ( playing && ( recordOutput || recordFromDevice ))
@@ -325,7 +338,7 @@ namespace AudioEngine
                 if ( recordFromDevice ) // recording from device input ? > write the record buffer
                     DiskWriter::appendBuffer( recbuffer );
                 else                    // recording global output ? > write the combined buffer
-                    DiskWriter::appendBuffer( outbuffer, bufferSize, AudioEngineProps::OUTPUT_CHANNELS );
+                    DiskWriter::appendBuffer( outbuffer, bufferSize, outputChannels );
 
                 // exceeded maximum recording buffer amount ? > write current recording
                 if ( DiskWriter::bufferFull() || haltRecording )
@@ -335,7 +348,7 @@ namespace AudioEngine
 
                     if ( !haltRecording )
                     {
-                        DiskWriter::generateOutputBuffer(); // allocate new buffer for next iteration
+                        DiskWriter::generateOutputBuffer( amountOfChannels ); // allocate new buffer for next iteration
                         ++recordingFileId;
                     }
                     else {
@@ -408,7 +421,29 @@ namespace AudioEngine
 
         if ( broadcastUpdate )
         {
-            Observer::broadcastTempoUpdate();
+#ifdef USE_JNI
+
+            // when using the engine through JNI with Java, we don't broadcast using
+            // the Notifier, but instantly invoke a callback directly on the bridge
+            // as it allows us to update multiple parameters at once
+
+            jmethodID native_method_id = JavaBridge::getJavaMethod( JavaAPIs::TEMPO_UPDATED );
+
+            if ( native_method_id != 0 )
+            {
+                JNIEnv* env = JavaBridge::getEnvironment();
+
+                if ( env != 0 )
+                {
+                    env->CallStaticVoidMethod( JavaBridge::getJavaInterface(), native_method_id,
+                                               AudioEngine::tempo, AudioEngine::bytes_per_beat,
+                                               AudioEngine::bytes_per_tick, AudioEngine::bytes_per_bar,
+                                               AudioEngine::time_sig_beat_amount, AudioEngine::time_sig_beat_unit );
+                }
+            }
+#else
+            Notifier::broadcast( Notifications::SEQUENCER_TEMPO_UPDATED );
+#endif
         }
     }
 
@@ -420,7 +455,7 @@ namespace AudioEngine
         if ( stepPosition >= max_step_position )
             stepPosition = min_step_position;
 
-        Observer::broadcastStepPosition();
+        Notifier::broadcast( Notifications::SEQUENCER_POSITION_UPDATED, stepPosition );
     }
 
     bool writeChannelCache( AudioChannel* channel, AudioBuffer* channelBuffer, int cacheReadPos )
@@ -436,15 +471,11 @@ namespace AudioEngine
 }
 
 /**
- * this is only in use if javajni.h is included in the SWIG .i-definitions file
- * it provides a proxied hook into the methods of the AudioEngine that allow
- * us to grab a reference to the VM and Java object, so we can send messages
- * to it via the Java Bridge
+ * the remainder is only in use when USE_JNI is set to true to allow using
+ * the engine from Java. These method provide a proxied hook into the
+ * public methods of the AudioEngine
  */
 #ifdef USE_JNI
-
-#include <jni.h>
-#include "javabridge.h"
 
 /**
  * registers the calling Object and its environment

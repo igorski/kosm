@@ -1,8 +1,8 @@
 package nl.igorski.kosm.controller.effects;
 
 import nl.igorski.kosm.R;
-import nl.igorski.kosm.activities.Kosm;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.Kosm;
+import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.definitions.ParticleSounds;
 import nl.igorski.kosm.model.KosmInstruments;
 import nl.igorski.lib.audio.definitions.AudioConstants;

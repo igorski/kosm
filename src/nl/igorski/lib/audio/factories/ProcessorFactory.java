@@ -3,9 +3,9 @@ package nl.igorski.lib.audio.factories;
 import nl.igorski.lib.audio.definitions.AudioConstants;
 import nl.igorski.lib.audio.definitions.OscillatorDestinations;
 import nl.igorski.lib.audio.nativeaudio.*;
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.definitions.KosmConstants;
 
 /**
@@ -210,7 +210,7 @@ public final class ProcessorFactory
 
         if ( chain.lpfhpf == null )
         {
-            f = new LPFHPFilter(( float ) NativeAudioRenderer.SAMPLE_RATE, 55, OUTPUT_CHANNELS );
+            f = new LPFHPFilter(( float ) MWEngine.SAMPLE_RATE, 55, OUTPUT_CHANNELS );
             chain.lpfhpf = f;
         }
         else {
@@ -225,7 +225,7 @@ public final class ProcessorFactory
 
         if ( chain.finalizer == null )
         {
-            f = new Finalizer( 2f, 500f, NativeAudioRenderer.SAMPLE_RATE, OUTPUT_CHANNELS );
+            f = new Finalizer( 2f, 500f, MWEngine.SAMPLE_RATE, OUTPUT_CHANNELS );
             chain.finalizer = f;
         }
         else {

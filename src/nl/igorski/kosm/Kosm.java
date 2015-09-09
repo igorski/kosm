@@ -1,4 +1,4 @@
-package nl.igorski.kosm.activities;
+package nl.igorski.kosm;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +12,7 @@ import nl.igorski.kosm.controller.menu.OpenEffectsMenuCommand;
 import nl.igorski.kosm.controller.menu.OpenWaveformMenuCommand;
 import nl.igorski.kosm.controller.startup.StartupCommand;
 import nl.igorski.kosm.definitions.Assets;
-import nl.igorski.kosm.renderers.ViewRenderer;
+import nl.igorski.kosm.view.ui.ViewRenderer;
 import nl.igorski.kosm.view.ParticleSequencer;
 import nl.igorski.lib.activities.BaseActivity;
 import nl.igorski.lib.framework.Core;

@@ -22,6 +22,7 @@
  */
 #include "routeableoscillator.h"
 #include "global.h"
+#include <definitions/waveforms.h>
 #include <utilities/utils.h>
 
 // constructor

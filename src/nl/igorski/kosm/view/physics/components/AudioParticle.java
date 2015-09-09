@@ -13,7 +13,7 @@ import nl.igorski.kosm.view.ParticleSequencer;
 import nl.igorski.lib.audio.definitions.WaveForms;
 import nl.igorski.lib.audio.nativeaudio.AudioParticleEvent;
 import nl.igorski.lib.audio.nativeaudio.BaseAudioEvent;
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.math.MathTool;
@@ -283,7 +283,7 @@ public final class AudioParticle extends CircleParticle
         if ( waveform == WaveForms.SAWTOOTH ||
              waveform == WaveForms.SINE_WAVE )
         {
-            length = NativeAudioRenderer.BYTES_PER_BAR;// * 2;
+            length = MWEngine.BYTES_PER_BAR;// * 2;
 
             if ( _frequency > 600 )
                 attack = .25f;
@@ -296,7 +296,7 @@ public final class AudioParticle extends CircleParticle
         }
         else if ( waveform == WaveForms.SQUARE_WAVE )
         {
-            length = NativeAudioRenderer.BYTES_PER_BAR;
+            length = MWEngine.BYTES_PER_BAR;
         }
 
         if ( _event == null )

@@ -2,12 +2,12 @@ package nl.igorski.kosm.controller.startup;
 
 import nl.igorski.lib.audio.factories.ProcessorFactory;
 import nl.igorski.lib.audio.nativeaudio.Compressor;
-import nl.igorski.lib.audio.nativeaudio.NativeAudioEngine;
+import nl.igorski.lib.audio.nativeaudio.MWEngineCore;
 import nl.igorski.lib.audio.nativeaudio.ProcessingChain;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.view.ParticleSequencer;
 
 /**
@@ -19,12 +19,11 @@ import nl.igorski.kosm.view.ParticleSequencer;
  */
 public final class CreateMasterBusCommand extends BaseSimpleCommand
 {
-    @Override
     public void execute( INotification aNote )
     {
         DebugTool.log( "CREATE MASTER BUS COMMAND" );
 
-        final ProcessingChain chain = NativeAudioEngine.getMasterBusProcessors();
+        final ProcessingChain chain = MWEngineCore.getMasterBusProcessors();
         ParticleSequencer.masterBus = new MWProcessingChain( chain );
 
         // compressor

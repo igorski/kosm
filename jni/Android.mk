@@ -7,12 +7,13 @@ LOCAL_C_INCLUDES  := $(LOCAL_PATH)
 LOCAL_CFLAGS      := -O3
 LOCAL_CPPFLAGS    := $(LOCAL_CFLAGS)
 LOCAL_SRC_FILES   := \
+jni/java_interface_wrap.cpp \
+jni/javabridge.cpp \
+jni/javautilities.cpp \
 chunkware/SimpleEnvelope.cpp \
 chunkware/SimpleGate.cpp \
 chunkware/SimpleComp.cpp \
 chunkware/SimpleLimit.cpp \
-java_interface_wrap.cpp \
-javabridge.cpp \
 global.cpp \
 utilities/utils.cpp \
 audioengine.cpp \
@@ -31,6 +32,8 @@ events/drumevent.cpp \
 events/basesynthevent.cpp \
 events/synthevent.cpp \
 events/sampleevent.cpp \
+messaging/notifier.cpp \
+messaging/observer.cpp \
 processors/baseprocessor.cpp \
 processors/bitcrusher.cpp \
 processors/compressor.cpp \
@@ -52,16 +55,15 @@ utilities/bulkcacher.cpp \
 utilities/diskwriter.cpp \
 envelopefollower.cpp \
 lfo.cpp \
-observer.cpp \
 processingchain.cpp \
 ringbuffer.cpp \
-utilities/jnisamplemanager.cpp \
 utilities/samplemanager.cpp \
 utilities/tablepool.cpp \
-sequencer.cpp \
-sequencer_api.cpp \
-wavetable.cpp \
+utilities/wavereader.cpp \
 utilities/wavewriter.cpp \
+sequencer.cpp \
+sequencercontroller.cpp \
+wavetable.cpp \
 routeableoscillator.cpp \
 kosm/audioparticleevent.cpp \
 

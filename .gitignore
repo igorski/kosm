@@ -7,7 +7,9 @@ build/
 obj/
 bin/
 gen/
+jni/jni/java_interface_wrap.cpp
 libs/armeabi/*
 libs/armeabi-v7a/*
 libs/x86/*
 libs/mips/*
+src/nl/igorski/lib/audio/nativeaudio/*

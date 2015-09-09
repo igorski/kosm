@@ -20,35 +20,35 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __DISKWRITER_H_INCLUDED__
-#define __DISKWRITER_H_INCLUDED__
+#ifndef JAVAUTILITIES_H_INCLUDED
+#define JAVAUTILITIES_H_INCLUDED
 
-#include "audiobuffer.h"
-#include <string>
-#include <vector>
+#include "javabridge.h"
 
 /**
- * DiskWriter is a util that will record audio for a given buffer length
- * (for instance to record a whole measure of live generated music) and
- * appends the AudioBuffer generatad by the engines render queue
- * until the buffer is full, after which the contents can be written
- * onto disk in PCM WAV format
+ * JavaUtilities provide convenient hooks into the engine to
+ * register sample buffers directly into the SampleManager or TablePool
+ * without having to use AudioBuffers (should remain a native layer component)
  */
-namespace DiskWriter
+class JavaUtilities
 {
-    // output directory to write to
-    extern std::string   outputDirectory;
-    extern unsigned long outputBufferSize;
-    extern unsigned long outputWriterIndex;
-    extern AudioBuffer*  cachedBuffer;
+    public:
 
-    extern void prepare( std::string aOutputDir, int aBufferSize, int amountOfChannels );
-    extern void generateOutputBuffer( int amountOfChannels );
-    extern void flushOutput();
-    extern void appendBuffer( AudioBuffer* aBuffer );
-    extern void appendBuffer( float* aBuffer, int aBufferSize, int amountOfChannels );
-    extern bool bufferFull();
-    extern void writeBufferToFile( int aSampleRate, int aNumChannels, bool broadcastUpdate );
-}
+        // creates an AudioBuffer from a given WAV file and stores it inside
+        // the SampleManager under given key "aKey"
+
+        static bool createSampleFromFile( jstring aKey, jstring aWAVFilePath );
+
+        // creates an AudioBuffer from given sample buffers and stores it inside
+        // the SampleManager under given key "aKey", aOptRightBuffer can be null
+
+        static void createSampleFromBuffer( jstring aKey, jint aBufferLength, jint aChannelAmount,
+                                            jdoubleArray aBuffer, jdoubleArray aOptRightBuffer );
+
+        // cache given sample buffers in the TablePool for given identifiers and waveform types
+
+        static void cacheTable( jint tableLength, jint waveformType );
+        static void cacheTable( jint tableLength, jint waveformType, jdoubleArray aBuffer );
+};
 
 #endif

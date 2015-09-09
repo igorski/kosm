@@ -2,7 +2,7 @@ package nl.igorski.kosm.controller.system;
 
 import android.app.Activity;
 import android.content.Intent;
-import nl.igorski.kosm.activities.Kosm;
+import nl.igorski.kosm.Kosm;
 import nl.igorski.lib.activities.BaseActivity;
 import nl.igorski.lib.framework.Core;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;

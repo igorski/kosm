@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2015 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,30 +20,31 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#include "tablepool.h"
-#include <generators/wavegenerator.h>
+#ifndef __NOTIFICATIONS_H_INCLUDED__
+#define __NOTIFICATIONS_H_INCLUDED__
 
-namespace TablePool
+class Notifications
 {
-    std::map<int, WaveTable*> _cachedTables;
+    public:
 
-    void getTable( WaveTable* waveTable, int waveformType )
-    {
-        std::map<int, WaveTable*>::iterator it = _cachedTables.find( waveformType );
+        /**
+         * all the messages the audio engine broadcasts
+         * to indicate state changes
+         *
+         * see observer.h and notifier.h for integration
+         */
+        enum ids {
+            SEQUENCER_POSITION_UPDATED,
+            MARKER_POSITION_REACHED,
+            SEQUENCER_TEMPO_UPDATED,
+            RECORDING_STATE_UPDATED,
+            BOUNCE_COMPLETE,
 
-        if ( it != _cachedTables.end())
-        {
-            // table existed, load the pooled version
-            waveTable->cloneTable(( WaveTable* )( it->second ));
-        }
-        else
-        {
-            // wave table hasn't been generated yet ? generate its contents on the fly
-            if ( !waveTable->hasContent() )
-                WaveGenerator::generate( waveTable, waveformType );
+            STATUS_BRIDGE_CONNECTED,
 
-            // insert a clone of the generated table into the pools table map
-            _cachedTables.insert( std::pair<int, WaveTable*>( waveformType, waveTable->clone() ));
-        }
-    }
-}
+            ERROR_HARDWARE_UNAVAILABLE,
+            ERROR_THREAD_START
+        };
+};
+
+#endif

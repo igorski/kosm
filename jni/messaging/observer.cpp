@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2015 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,24 +20,28 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef JNISAMPLEMANAGER_H_INCLUDED
-#define JNISAMPLEMANAGER_H_INCLUDED
+#include "observer.h"
 
-#include "samplemanager.h"
-#include "../audiobuffer.h"
-#include "../javabridge.h"
+/* constructor / destructor */
 
-// these provide hooks into the SampleManager and TablePool, accessible via JNI from Java
-
-class JNISampleManager
+Observer::Observer()
 {
-    public:
-        static AudioBuffer* getSample( jstring aIdentifier );
-        static bool hasSample        ( jstring aIdentifier );
-        static void setSample        ( jstring aKey, jint aBufferLength, jint aChannelAmount,
-                                       jdoubleArray aBuffer, jdoubleArray aOptRightBuffer );
-        static void cacheTable       ( jint tableLength, jint waveformType );
-        static void cacheTable       ( jint tableLength, jint waveformType, jdoubleArray aBuffer );
-};
 
-#endif
+}
+
+Observer::~Observer()
+{
+
+}
+
+/* public methods */
+
+void Observer::handleNotification( int aNotificationType )
+{
+    // override in derived class
+}
+
+void Observer::handleNotification( int aNotificationType, int aValue )
+{
+    // override in derived class
+}

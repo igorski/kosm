@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.utils;
 
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.storage.FileSystem;
 import uk.labbookpages.wave.WavFile;
@@ -28,7 +28,7 @@ public final class WAVWriter
 
         try
         {
-            final int sampleRate  = NativeAudioRenderer.SAMPLE_RATE;
+            final int sampleRate  = MWEngine.SAMPLE_RATE;
             final long numSamples = aBuffer.length;
 
             // create a stereo WAV file w/ the specified properties
@@ -77,7 +77,7 @@ public final class WAVWriter
 
         try
         {
-            final int sampleRate  = NativeAudioRenderer.SAMPLE_RATE;
+            final int sampleRate  = MWEngine.SAMPLE_RATE;
             long numSamples       = 0;
             int numChannels       = 1;
 

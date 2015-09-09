@@ -1,8 +1,8 @@
 package nl.igorski.kosm.controller.effects;
 
 import nl.igorski.kosm.R;
-import nl.igorski.kosm.activities.Kosm;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.kosm.Kosm;
+import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;

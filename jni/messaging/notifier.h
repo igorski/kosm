@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2015 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,25 +20,21 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef __OBSERVER_H_INCLUDED__
-#define __OBSERVER_H_INCLUDED__
+#ifndef __NOTIFIER_H_INCLUDED__
+#define __NOTIFIER_H_INCLUDED__
 
-/**
- * The Observer is used to broadcast messages
- * related to engine state changes, it can use the JNI
- * bridge to communicate messages back to the Java environment, but
- * can also be extended for custom behaviour should you choose to
- * keep the entire application within C++
- */
-class Observer
+#include "observer.h"
+#include <map>
+#include <vector>
+
+namespace Notifier
 {
-    public:
+    extern std::map<int, std::vector<Observer*> > _observerMap;
 
-        static void handleBounceComplete( int aIdentifier );
-        static void broadcastStepPosition();
-        static void broadcastTempoUpdate();
-        static void broadcastRecordingUpdate( int aRecordingIdentifier );
-        static void handleHardwareUnavailable();
-};
+    extern void registerObserver  ( int aNotificationType, Observer* aObserver );
+    extern void unregisterObserver( int aNotificationType, Observer* aObserver );
+    extern void broadcast         ( int aNotificationType );
+    extern void broadcast         ( int aNotificationType, int aNotificationValue );
+}
 
 #endif

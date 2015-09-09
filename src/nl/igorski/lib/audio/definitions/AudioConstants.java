@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.definitions;
 
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
+import nl.igorski.lib.audio.MWEngine;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,7 +24,7 @@ public final class AudioConstants
     // TODO: make constants in C++ classes!!
 
     public static float FILTER_MIN_FREQ        = 50.0f;
-    public static float FILTER_MAX_FREQ        = NativeAudioRenderer.SAMPLE_RATE / 4;
+    public static float FILTER_MAX_FREQ        = MWEngine.SAMPLE_RATE / 4;
     public static float FILTER_MIN_RESONANCE   = 0.1f;
     public static float FILTER_MAX_RESONANCE   = ( float )( Math.sqrt( 2 ) * .5 );
 

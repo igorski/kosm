@@ -23,6 +23,7 @@
 #include "lfo.h"
 #include "global.h"
 #include "audioengine.h"
+#include <definitions/waveforms.h>
 #include <utilities/utils.h>
 #include <utilities/tablepool.h>
 #include <math.h>

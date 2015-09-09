@@ -5,8 +5,8 @@ import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
 import nl.igorski.lib.audio.nativeaudio.Arpeggiator;
 import nl.igorski.lib.audio.nativeaudio.BufferUtility;
 import nl.igorski.lib.audio.nativeaudio.SynthInstrument;
-import nl.igorski.lib.audio.renderer.NativeAudioRenderer;
-import nl.igorski.kosm.audio.MWProcessingChain;
+import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.kosm.model.MWProcessingChain;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +41,7 @@ public final class InternalSynthInstrument
         arp.setShiftForStep ( 1, -12 );
         arp.setShiftForStep ( 2, 12 );
         arp.setShiftForStep ( 3, -12);
-        arp.setStepSize     ( BufferUtility.calculateSamplesPerBeatDivision( NativeAudioRenderer.SAMPLE_RATE,
+        arp.setStepSize     ( BufferUtility.calculateSamplesPerBeatDivision( MWEngine.SAMPLE_RATE,
                               120.0, 16 ));
     }
 

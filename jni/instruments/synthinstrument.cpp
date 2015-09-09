@@ -23,7 +23,8 @@
 #include "synthinstrument.h"
 #include "../global.h"
 #include "../sequencer.h"
-#include "../utilities/utils.h"
+#include <definitions/waveforms.h>
+#include <utilities/utils.h>
 #include <events/basesynthevent.h>
 #include <cstddef>
 

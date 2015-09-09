@@ -6,7 +6,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.equations.Cubic;
 import nl.igorski.kosm.R;
-import nl.igorski.kosm.activities.Kosm;
+import nl.igorski.kosm.Kosm;
 import nl.igorski.lib.animation.Animator;
 import nl.igorski.lib.animation.enums.AnimationProps;
 import nl.igorski.lib.framework.interfaces.INotification;

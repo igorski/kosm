@@ -1,4 +1,4 @@
-package nl.igorski.kosm.renderers;
+package nl.igorski.kosm.view.ui;
 
 import android.content.Context;
 import android.graphics.*;
@@ -11,7 +11,7 @@ import nl.blissfulthinking.java.android.ape.APEngine;
 import nl.blissfulthinking.java.android.ape.AbstractParticle;
 import nl.blissfulthinking.java.android.apeforandroid.FP;
 import nl.igorski.kosm.R;
-import nl.igorski.kosm.activities.Kosm;
+import nl.igorski.kosm.Kosm;
 import nl.igorski.kosm.controller.menu.CloseEffectsMenuCommand;
 import nl.igorski.kosm.controller.menu.CloseWaveformMenuCommand;
 import nl.igorski.kosm.controller.startup.PrepareAnimationAccessorsCommand;
@@ -19,7 +19,6 @@ import nl.igorski.kosm.definitions.Assets;
 import nl.igorski.kosm.definitions.SequencerModes;
 import nl.igorski.kosm.model.vo.ParticleEmitterVO;
 import nl.igorski.kosm.view.ParticleSequencer;
-import nl.igorski.kosm.view.ui.Instructions;
 import nl.igorski.lib.animation.Animator;
 import nl.igorski.lib.framework.Core;
 import nl.igorski.lib.ui.touch.TouchManager;
