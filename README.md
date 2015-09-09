@@ -39,6 +39,17 @@ Those of a Unix-bent can run the _build.sh_-file in the root folder of the repos
 _build.bat_-file that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available
 through the PATH settings of your system (or adjust the shell scripts accordingly).
 
+#### Resolving dependencies
+
+Run the Gradle target "externals" to pull all dependent libraries from Github.
+
 #### Building the main application
 
-Run the ant script with the "install" target.
+The usual Gradle suspects such as "clean", "build", etc. work. To instantly deploy a debug version of the
+application onto an attached Android device / emulator, run :
+
+    gradle installDebug
+    
+#### Application outline
+
+TODO : write up on this ;)
