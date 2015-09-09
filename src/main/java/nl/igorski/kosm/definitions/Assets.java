@@ -33,7 +33,6 @@ public final class Assets
     /* fonts and text sizes (calculated on init) */
 
     public static Typeface DEFAULT_FONT;
-    public static Typeface READABLE_FONT;
     public static int TEXT_SIZE_HEADER = 0;
     public static int TEXT_SIZE_NORMAL = 0;
 
@@ -143,7 +142,7 @@ public final class Assets
 
     private static void prepareFonts( Context aContext, DisplayMetrics aMetrics )
     {
-        DEFAULT_FONT           = Typeface.createFromAsset( aContext.getAssets(), "fonts/Comfortaa-Bold.ttf" );
+        DEFAULT_FONT = Typeface.createFromAsset( aContext.getAssets(), "fonts/Comfortaa-Bold.ttf" );
 
         TEXT_SIZE_HEADER = ( int ) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 19, aMetrics );
         TEXT_SIZE_NORMAL = ( int ) TypedValue.applyDimension( TypedValue.COMPLEX_UNIT_DIP, 14, aMetrics );
@@ -164,27 +163,7 @@ public final class Assets
         final int widthPixels  = metrics.widthPixels;
         final int heightPixels = metrics.heightPixels;
 
-        /*
-        final float scaleFactor   = metrics.density;
-        final float widthDp       = widthPixels  / scaleFactor;
-        final float heightDp      = heightPixels / scaleFactor;
-        final float smallestWidth = Math.min( widthDp, heightDp );
-
-//        320dp: a typical phone screen (240x320 ldpi, 320x480 mdpi, 480x800 hdpi, etc).
-//        480dp: a tweener tablet like the Streak (480x800 mdpi).
-//        600dp: a 7” tablet (600x1024 mdpi).
-//        720dp: a 10” tablet (720x1280 mdpi, 800x1280 mdpi, etc).
-
-        if ( smallestWidth > 720 ) {
-            DebugTool.log( "10 inch tablet" );
-            return true;
-        }
-        else if ( smallestWidth > 600 ) {
-            DebugTool.log( "7 inch tablet" );
-            return true;
-        }
-        */
-        // additional checks, as obscure tablets misrepresent their density as hdpi
+        // as obscure tablets misrepresent their density as hdpi
         // or are 800 x 480 on a 7: screen, let's calculate the dimensions in inches
 
         final float widthDpi     = metrics.xdpi;

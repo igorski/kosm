@@ -31,7 +31,7 @@ import nl.igorski.kosm.view.physics.components.AudioParticle;
 
 import java.util.Vector;
 
-public class ViewRenderer extends BaseThread
+public final class ViewRenderer extends BaseThread
 {
     /* touch event related */
 
