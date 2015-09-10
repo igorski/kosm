@@ -5,6 +5,8 @@ an open source abstract audio application for Android. Kosm uses the acceleromet
 trigger state changes in its audio engine which in turn responds by synthesizing audio on the fly. In
 other words : Kosm is a "gravity sequencer", or something.
 
+Keywords : chaos, chance, microtonal.
+
 ### MWEngine audio engine
 
 Kosm is built on top of MWEngine, an open source audio engine for Android by igorski. MWEngine is
@@ -38,9 +40,7 @@ audio engine. All build commands bar the compilation of the audio engine code is
 
 The makefile (_/jni/Android.mk_) will compile the MWEngine audio engine with all available modules.
 
-Those of a Unix-bent can run the _build.sh_-file in the root folder of the repository whereas Windows users can run the
-_build.bat_-file that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available
-through the PATH settings of your system (or adjust the shell scripts accordingly).
+Those of a Unix-bent can run the _build.sh_-file in the root folder of the repository whereas Windows users can run the _build.bat_-file that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available through the PATH settings of your system (or adjust the shell scripts accordingly).
 
 #### Resolving dependencies
 
@@ -60,11 +60,10 @@ responsible for the applications behaviour.
 
 Inside the ParticleSequencer there are two threads running :
 
- * *ViewRenderer* responsible for drawing the "world" and updating the physics engine (physicsWorld)
- * *MWEngine* responsible for rendering synthesized audio using the native layer engine
- 
-Additionally, the ParticleSequencer listens to touch and sensor change events and delegates actions
-accordingly (see "event handlers" section).
+ * **ViewRenderer** responsible for drawing the "world" and updating the physics engine (physicsWorld)
+ * **MWEngine** responsible for rendering synthesized audio using the native layer engine
+
+The ParticleSequencer listens to touch and sensor change events and delegates actions accordingly (see the "event handlers" section). This is basically what the app boils down to: monitoring the sensor changes and synthesizing all colliding "particles"; upon touching the screen surface, the ViewRenderer will spawn particles. Depending on the sequencer mode these particles have different behaviours (e.g. are static, respond to gravity, emit clones at a steady rate, etc.), when they collide one another they will synthesize their audio. Note that the mass and type of a particle determines the pitch and waveform used for synthesis (see **AudioParticleEvent**)a
 
 Most of the application logic is command based (see _Core.notify()_ invocations) in a simplified abstraction
-of the PureMVC framework, but the code for these should be self explanatory enough.
+of the PureMVC framework, but the code for these should be self explanatory enough. A command basically ties together all ties of the application (all its actors) to execute a state change. E.g. there are commands for creating the effects chain, opening/closing of the submenus, toggling sequencer modes, etc. As such most of the logic is small and self contained.
