@@ -44,11 +44,13 @@ Those of a Unix-bent can run the _build.sh_-file in the root folder of the repos
 
 #### Resolving dependencies
 
-Run the Gradle target "externals" to pull all dependent libraries from Github.
+Run the Gradle target "_externals_" to pull all dependent libraries from Github, e.g.:
+
+    gradle externals
 
 #### Building the main application
 
-The usual Gradle suspects such as "clean", "build", etc. work. To instantly deploy a debug version of the
+The usual Gradle suspects such as "_clean_", "_build_", etc. are present. To instantly deploy a debug version of the
 application onto an attached Android device / emulator, run :
 
     gradle installDebug
@@ -63,6 +65,6 @@ Inside the ParticleSequencer there are two threads running :
  * **ViewRenderer** responsible for drawing the "world" and updating the physics engine (physicsWorld)
  * **MWEngine** responsible for rendering synthesized audio using the native layer engine
 
-The ParticleSequencer listens to touch and sensor change events and delegates actions accordingly (see the "event handlers" section). This is basically what the app boils down to: monitoring the sensor changes and synthesizing all colliding "particles"; upon touching the screen surface, the ViewRenderer will spawn particles. Depending on the sequencer mode these particles have different behaviours (e.g. are static, respond to gravity, emit clones at a steady rate, etc.), when they collide one another they will synthesize their audio. Note that the mass and type of a particle determines the pitch and waveform used for synthesis (see **AudioParticleEvent**).
+The ParticleSequencer listens to touch and sensor change events and delegates actions accordingly (see its "event handlers" section). This is basically what the app boils down to: monitoring sensor changes and synthesizing colliding "particles"; upon touching the screen surface, the ViewRenderer will spawn particles. Depending on the sequencer mode these particles have different behaviours (e.g. are static, respond to gravity, emit clones at a steady rate, etc.), when these particles collide with one another they will synthesize their audio. The "mass" and type of a particle determines the pitch and waveform used for synthesis (see **AudioParticle**).
 
 Most of the application logic is command-based (using a simplified abstraction of the PureMVC framework, see _Core.notify()_ invocations) and the code for these commands should be self explanatory; a command basically ties together all tiers of the application (all its actors) to execute a state change. E.g. there are commands for creating the effects chain, opening/closing of the submenus, toggling sequencer modes, etc. As such most of the logic is small and self contained.
