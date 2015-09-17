@@ -1,9 +1,11 @@
 package nl.igorski.kosm.view.ui;
 
 import android.content.Context;
-import android.graphics.*;
 import android.os.Handler;
 import android.text.TextPaint;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -35,28 +37,32 @@ public final class ViewRenderer extends BaseThread
 {
     /* touch event related */
 
-    private float fingerX = 0;
-    private float fingerY = 0;
-    private float startX  = 0; /* class reference to avoid unnecessary allocation and garbage collection */
-    private float startY  = 0; /* class reference to avoid unnecessary allocation and garbage collection */
+    // we use class references to avoid unnecessary allocation and garbage collection of local vars
 
-    private ParticleEmitterVO _emitterVO;
+    private float _fingerX   = 0;
+    private float _fingerY   = 0;
+    private float _startX    = 0;
+    private float _startY    = 0;
+    private long  _downStart = 0;
 
     private float      oldFingerDistance = 1f;
     private float      newFingerDistance = 1f;
     private static int TOUCH_MODE_NONE   = 0;
     private static int TOUCH_MODE_ZOOM   = 1;
     private int        touchMode         = TOUCH_MODE_NONE;
+    public int         sequencerMode     = SequencerModes.MODE_DEFAULT;
 
     /* container zoom related */
 
     private static float MAX_ZOOM = 1.5f;
     private static float MIN_ZOOM = .15f;
 
-    public int               mode          = SequencerModes.MODE_DEFAULT;
+    /* physics related */
+
+    private ParticleEmitterVO _emitterVO;
     private AbstractParticle _tappedObject = null;
-    private long             _downStart    = 0;
-    private PhysicsWorld physicsWorld  = new PhysicsWorld();
+    private PhysicsWorld     _physicsWorld = new PhysicsWorld();
+
     /* instructions */
 
     public Instructions instructions;
@@ -78,7 +84,7 @@ public final class ViewRenderer extends BaseThread
         mSurfaceHolder   = surfaceHolder;
 
         final TextPaint paint = new TextPaint();
-        paint.setTextSize( Assets.TEXT_SIZE_HEADER);
+        paint.setTextSize( Assets.TEXT_SIZE_HEADER );
         paint.setColor   ( Color.WHITE );
         paint.setTypeface( Assets.DEFAULT_FONT );
 
@@ -89,17 +95,17 @@ public final class ViewRenderer extends BaseThread
         // prepare tween manager
         Core.notify( new PrepareAnimationAccessorsCommand() );
 
-        doStart();
+        init();
     }
 
     /* public methods */
 
-    public void doStart()
+    public void init()
     {
         synchronized ( mSurfaceHolder )
         {
             // initialize the physics world
-            physicsWorld.initWorld();
+            _physicsWorld.initWorld();
         }
     }
 
@@ -167,7 +173,7 @@ public final class ViewRenderer extends BaseThread
 
     public void switchMode( final int newMode )
     {
-        mode       = newMode;
+        sequencerMode = newMode;
         _emitterVO = null; // make sure we won't resume creation of a emitter
         _downStart = 0;
 
@@ -176,7 +182,7 @@ public final class ViewRenderer extends BaseThread
 
         for ( int i = 0, l = modeInstructions.length; i < l; ++i )
         {
-            if ( modeInstructions[ i ] == mode )
+            if ( modeInstructions[ i ] == sequencerMode)
             {
                 showInstructions = true;
                 modeInstructions[ i ] = -1;
@@ -192,7 +198,7 @@ public final class ViewRenderer extends BaseThread
             if ( Kosm.waveformMenuOpened )
                 Core.notify( new CloseWaveformMenuCommand() );
 
-            switch( mode )
+            switch(sequencerMode)
             {
                 case SequencerModes.MODE_HOLD:
                     instructions.setContent( R.string.hold_mode_title, R.string.hold_mode_body );
@@ -215,7 +221,7 @@ public final class ViewRenderer extends BaseThread
 
     public void destroy360container()
     {
-        physicsWorld.destroyContainer();
+        _physicsWorld.destroyContainer();
     }
 
     /* event handlers */
@@ -293,8 +299,8 @@ public final class ViewRenderer extends BaseThread
     public final boolean handleTouchEvent( MotionEvent e )
     {
         final int action = e.getAction();
-        fingerX          = e.getX();
-        fingerY          = e.getY();
+        _fingerX = e.getX();
+        _fingerY = e.getY();
 
         switch ( action & MotionEvent.ACTION_MASK )
         {
@@ -308,19 +314,19 @@ public final class ViewRenderer extends BaseThread
                 }
                 _downStart = System.currentTimeMillis();
 
-                startX = fingerX;
-                startY = fingerY;
+                _startX = _fingerX;
+                _startY = _fingerY;
 
                 // check if we tapped on a particle
                 Vector<AudioParticle> particles = container.getParticles();
 
-                if ( mode != SequencerModes.MODE_RESETTER )
+                if ( sequencerMode != SequencerModes.MODE_RESETTER )
                 {
                     synchronized ( particles )
                     {
                         for ( final AudioParticle s : particles )
                         {
-                            final boolean clickedParticle = s.handleTouchDown( fingerX, fingerY );
+                            final boolean clickedParticle = s.handleTouchDown(_fingerX, _fingerY);
 
                             if ( clickedParticle )
                             {
@@ -355,14 +361,14 @@ public final class ViewRenderer extends BaseThread
                     final long elapsed = time - _downStart;
 
                     // create circular surface when in 360 mode
-                    if (( mode == SequencerModes.MODE_360 ) && !physicsWorld.hasContainer )
+                    if (( sequencerMode == SequencerModes.MODE_360 ) && !_physicsWorld.hasContainer )
                     {
-                        //physicsWorld.createContainer(( int ) ( ParticleSequencer.width * .15 ), ( int ) startX, ( int ) startY );
-                        physicsWorld.createContainer(( int ) ( ParticleSequencer.width * .15 ),
+                        //_physicsWorld.createContainer(( int ) ( ParticleSequencer.width * .15 ), ( int ) _startX, ( int ) _startY );
+                        _physicsWorld.createContainer(( int ) ( ParticleSequencer.width * .15 ),
                                                      ParticleSequencer.width / 2, ParticleSequencer.height / 2 );
                     }
                     // create emitter when in emitter mode
-                    else if ( mode == SequencerModes.MODE_EMITTER )
+                    else if ( sequencerMode == SequencerModes.MODE_EMITTER )
                     {
                         if ( _downStart == 0 )
                             return true;
@@ -378,11 +384,11 @@ public final class ViewRenderer extends BaseThread
                         {
                             //DebugTool.log( "CREATE FOR AVG => " + _emitterVO.average());
 
-                            container.createEmitter( _emitterVO, fingerX, fingerY );
+                            container.createEmitter(_emitterVO, _fingerX, _fingerY);
                             _emitterVO = null;
                         }
                     }
-                    else if ( mode == SequencerModes.MODE_RESETTER )
+                    else if ( sequencerMode == SequencerModes.MODE_RESETTER )
                     {
                         if ( _downStart > 0 && elapsed > 1500l )
                         {
@@ -399,7 +405,7 @@ public final class ViewRenderer extends BaseThread
                         // create new AudioParticle, its radius is
                         // calculated from the time difference between
                         // pointer down and up events
-                        APEngine.addParticle( container.createAudioParticle( fingerX + 20, fingerY + 20,
+                        APEngine.addParticle( container.createAudioParticle( _fingerX + 20, _fingerY + 20,
                                               calcRadiusByTapInterval( elapsed ), createAsFixed() ));
                     }
                 }
@@ -416,8 +422,8 @@ public final class ViewRenderer extends BaseThread
                     // we're now zooming!
                     touchMode = TOUCH_MODE_ZOOM;
 
-                    startX += ( oldFingerDistance / 2 );
-                    startY += ( oldFingerDistance / 2 );
+                    _startX += ( oldFingerDistance / 2 );
+                    _startY += ( oldFingerDistance / 2 );
                 }
                 break;
 
@@ -436,15 +442,15 @@ public final class ViewRenderer extends BaseThread
                         // prevent extreme size changes
                         final double maxIncrease = .045;
 
-                        if ( newRadius > ( physicsWorld.previousRadius * ( 1 + maxIncrease )))
-                            newRadius = ( int ) ( physicsWorld.previousRadius * ( 1 + maxIncrease ));
+                        if ( newRadius > ( _physicsWorld.previousRadius * ( 1 + maxIncrease )))
+                            newRadius = ( int ) ( _physicsWorld.previousRadius * ( 1 + maxIncrease ));
 
-                        else if ( newRadius < ( physicsWorld.previousRadius * ( 1 - maxIncrease )))
-                            newRadius = ( int ) ( physicsWorld.previousRadius * ( 1 - maxIncrease ));
+                        else if ( newRadius < ( _physicsWorld.previousRadius * ( 1 - maxIncrease )))
+                            newRadius = ( int ) ( _physicsWorld.previousRadius * ( 1 - maxIncrease ));
 
-                        //physicsWorld.createContainer( newRadius, ( int ) startX, ( int ) startY );
-                        if ( physicsWorld.hasContainer )
-                            physicsWorld.createContainer( newRadius, ParticleSequencer.width / 2, ParticleSequencer.height / 2 );
+                        //_physicsWorld.createContainer( newRadius, ( int ) _startX, ( int ) _startY );
+                        if ( _physicsWorld.hasContainer )
+                            _physicsWorld.createContainer( newRadius, ParticleSequencer.width / 2, ParticleSequencer.height / 2 );
                     }
                 }
                 break;
@@ -461,14 +467,14 @@ public final class ViewRenderer extends BaseThread
 
     private boolean createAsFixed()
     {
-        return mode == SequencerModes.MODE_HOLD;
+        return sequencerMode == SequencerModes.MODE_HOLD;
     }
 
     /**
      * draw all the particles onto the canvas
      * @param canvas {Canvas}
      */
-    private void render(Canvas canvas)
+    private void render( Canvas canvas )
     {
         if ( alpha == 0 )
         {
@@ -476,13 +482,13 @@ public final class ViewRenderer extends BaseThread
         }
         else {
             // in fading background when touching
-            if ( mode == SequencerModes.MODE_RESETTER )
+            if ( sequencerMode == SequencerModes.MODE_RESETTER )
                 canvas.drawARGB( Math.abs( alpha - 128 ), 255, 0, 0 );
             else
                 canvas.drawARGB( Math.abs( alpha - 128 ), 255, 255, 255 );
         }
         // APE physics engine
-        physicsWorld.draw( canvas );
+        _physicsWorld.draw(canvas);
 
         // instructions
         if ( showInstructions )
@@ -518,8 +524,8 @@ public final class ViewRenderer extends BaseThread
         if ( alpha > 0 )
             --alpha;
 
-        physicsWorld.setGravity( FP.fromFloat(( -container.roll ) / 10 ), FP.fromFloat(( -container.pitch ) / 10 ));
-        physicsWorld.updateWorld();
+        _physicsWorld.setGravity(FP.fromFloat((-container.roll) / 10), FP.fromFloat((-container.pitch) / 10));
+        _physicsWorld.updateWorld();
 
         container.updateEmitters();
 

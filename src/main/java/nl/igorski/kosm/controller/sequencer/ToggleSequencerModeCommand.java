@@ -28,7 +28,7 @@ public final class ToggleSequencerModeCommand extends BaseSimpleCommand
         final Button buttonModeToggle = (( Button ) aNote.getBody() );
         final ViewRenderer ui         = Kosm.getViewRenderer();
 
-        final int currentMode   = ui.mode;
+        final int currentMode   = ui.sequencerMode;
         final int amountOfModes = SequencerModes.MODES.length;
         int newMode             = currentMode;
 
@@ -54,9 +54,9 @@ public final class ToggleSequencerModeCommand extends BaseSimpleCommand
                 ui.destroy360container();
             }
         }
-        ui.switchMode(newMode);
+        ui.switchMode( newMode );
 
-        switch ( ui.mode )
+        switch ( ui.sequencerMode )
         {
             case SequencerModes.MODE_DEFAULT:
                 buttonModeToggle.setText( R.string.mode_default );
