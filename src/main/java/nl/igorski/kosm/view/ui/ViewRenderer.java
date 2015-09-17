@@ -106,69 +106,38 @@ public final class ViewRenderer extends BaseThread
     @Override
     public void run()
     {
+        Canvas c = null;
+
         while ( _isRunning )
         {
-            Canvas c = null;
             try
             {
                 c = mSurfaceHolder.lockCanvas( null );
+
                 synchronized ( mSurfaceHolder )
                 {
                     updateWorld();
-                    doDraw( c );
-
-                    // DEBUG
-//                                int cycles = 100000;
-//
-//                                Vector v = Vector.getNew(0,0);
-//                                int[] vector = new int[2];
-//
-//                                long now1 = System.currentTimeMillis();
-//                                int i = 0;
-//                                while(i<cycles) {
-//                                	  v.x++;
-//
-////                                    if(circleParticle instanceof CircleParticle) {
-//                                        i++;
-////                                    }
-//                                }
-//                                long timetaken1 = (System.currentTimeMillis()-now1);
-//
-//                                long now2 = System.currentTimeMillis();
-//                                int j = 0;
-//                                while(j<cycles) {
-//                                	  vector[1]++;
-////                                    if(circleParticle.type == AbstractParticle.TYPE_CIRCLE) {
-//                                        j++;
-////                                    }
-//                                }
-//                                long timetaken2 = (System.currentTimeMillis()-now2);
-//
-//                                if(timetaken1 < timetaken2) {
-//                                    type1won++;
-//                                }
-//                                else if(timetaken2 < timetaken1){
-//                                    type2won++;
-//                                }
-//
-//                                i+=j;
-//
-//                                Vector.release(v);
-//
-//                                Log.d("access test time difference: "+(timetaken1-timetaken2),"1 favoured : "+((float)type1won/(type1won+type2won)));
+                    render( c );
                 }
             }
             catch ( Exception e )
             {
-
+                // can occur when app loses focus...
             }
             finally
             {
-                // do this in a finally so that if an exception is thrown
-                // during the above, we don't leave the Surface in an
-                // inconsistent state
+                // if an exception is thrown during the above, we don't
+                // leave the Surface in an inconsistent state
+
                 if ( c != null )
-                    mSurfaceHolder.unlockCanvasAndPost( c );
+                {
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost( c );
+                    }
+                    catch ( IllegalArgumentException e ) {
+                        // java.lang.IllegalStateException: Surface has already been released
+                    }
+                }
             }
             synchronized ( _pauseLock )
             {
@@ -499,7 +468,7 @@ public final class ViewRenderer extends BaseThread
      * draw all the particles onto the canvas
      * @param canvas {Canvas}
      */
-    private void doDraw( Canvas canvas )
+    private void render(Canvas canvas)
     {
         if ( alpha == 0 )
         {

@@ -40,7 +40,11 @@ audio engine. All build commands bar the compilation of the audio engine code is
 
 The makefile (_/jni/Android.mk_) will compile the MWEngine audio engine with all available modules.
 
-Those of a Unix-bent can run the _build.sh_-file in the root folder of the repository whereas Windows users can run the _build.bat_-file that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available through the PATH settings of your system (or adjust the shell scripts accordingly).
+Those of a Unix-bent can run the _build.sh_-file in the root folder of the repository whereas Windows users can run the _build.bat_-file
+that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available through the PATH settings of your
+system (or adjust the shell scripts accordingly).
+
+After compiling the C++ code, the _nl.igorski.lib.audio.nativeaudio_-namespace should be available to Java.
 
 #### Resolving dependencies
 
@@ -67,4 +71,7 @@ Inside the ParticleSequencer there are two threads running :
 
 The ParticleSequencer listens to touch and sensor change events and delegates actions accordingly (see its "event handlers" section). This is basically what the app boils down to: monitoring sensor changes and synthesizing colliding "particles"; upon touching the screen surface, the ViewRenderer will spawn particles. Depending on the sequencer mode these particles have different behaviours (e.g. are static, respond to gravity, emit clones at a steady rate, etc.), when these particles collide with one another they will synthesize their audio. The "mass" and type of a particle determines the pitch and waveform used for synthesis (see **AudioParticle**).
 
-Most of the application logic is command-based (using a simplified abstraction of the PureMVC framework, see _Core.notify()_ invocations) and the code for these commands should be self explanatory; a command basically ties together all tiers of the application (all its actors) to execute a state change. E.g. there are commands for creating the effects chain, opening/closing of the submenus, toggling sequencer modes, etc. As such most of the logic is small and self contained.
+Most of the application logic is command-based (using a simplified abstraction of the PureMVC framework, see all _Core.notify()_ invocations)
+and the code for these commands should be self explanatory; a command basically ties together all actors of the application to execute a
+state change. E.g. there are commands for creating the effects chain, opening/closing of the submenus, toggling sequencer modes, etc.
+As such most of the logic is small and self contained.
