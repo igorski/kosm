@@ -59,6 +59,18 @@ application onto an attached Android device / emulator, run :
 
     gradle installDebug
     
+To create a signed release build, add the following into your Gradle's properties file (_~/.gradle/gradle.properties_)
+and replace the values accordingly:
+
+    RELEASE_STORE_FILE={path_to_.keystore_file}
+    RELEASE_STORE_PASSWORD={password_for_.keystore}
+    RELEASE_KEY_ALIAS={alias_for_.keystore}
+    RELEASE_KEY_PASSWORD={password_for_.keystore}
+    
+you can now build and sign a releasable APK by running:
+
+    gradle build
+    
 #### Application outline
 
 The main Activity _Kosm.java_ spawns an instance of *ParticleSequencer*. This is the main class
