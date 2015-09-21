@@ -1,17 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nl.igorski.kosm">
 
-    <!-- support all but the smallest of screens -->
+    <!-- support all, don't be racist -->
     <supports-screens
             android:xlargeScreens="true"
             android:largeScreens="true"
             android:normalScreens="true"
             android:smallScreens="true"
             android:anyDensity="true" />
-
-    <!-- minimum version is API 10 ( 2.3.3 Gingerbread ) but we target API 11 ( 3.0.x Honeycomb )
-         for GPU hardware acceleration and target 17 ( 4.2 Jellybean ) for low latency audio -->
-    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="17" />
 
     <!-- required permissions -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
