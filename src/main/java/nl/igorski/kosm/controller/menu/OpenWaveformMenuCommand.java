@@ -10,7 +10,6 @@ import nl.igorski.lib.animation.enums.AnimationProps;
 import nl.igorski.kosm.R;
 import nl.igorski.kosm.Kosm;
 import nl.igorski.lib.animation.Animator;
-import nl.igorski.lib.framework.controller.BaseAsyncCommand;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.ui.ButtonTool;
@@ -22,22 +21,20 @@ import nl.igorski.lib.utils.ui.ButtonTool;
  * Time: 20:52
  * To change this template use File | Settings | File Templates.
  */
-public class OpenWaveformMenuCommand extends BaseAsyncCommand
+public class OpenWaveformMenuCommand extends AnimatedMenuCommand
 {
-    public static boolean animationLocked = false; // only one animation instance at a time!
-
     @Override
     public void execute( INotification aNote )
     {
         DebugTool.log( "OPEN WAVEFORM MENU COMMAND" );
 
         // prevent other animations
-        if ( animationLocked ) {
+        if ( wfAnimationLocked ) {
             commandComplete();
             return;
         }
 
-        animationLocked = true;
+        wfAnimationLocked = true;
 
         // set toggle button as active, and animate out
         ButtonTool.setImageButtonImage( Kosm.btnWaveformToggle, R.drawable.toggle_wf_active );
@@ -84,9 +81,9 @@ public class OpenWaveformMenuCommand extends BaseAsyncCommand
     {
         public void onEvent( int i, BaseTween<?> baseTween )
         {
-            DebugTool.log( "MENU ANI COMPLETE" );
+            DebugTool.log( "WF MENU ANI COMPLETE" );
 
-            animationLocked         = false;
+            wfAnimationLocked       = false;
             Kosm.waveformMenuOpened = true;
             commandComplete();
         }

@@ -23,20 +23,18 @@ import nl.igorski.kosm.R;
  */
 public final class CloseWaveformMenuCommand extends OpenWaveformMenuCommand
 {
-    public static boolean animationLocked = false; // only one animation instance at a time!
-
     @Override
     public void execute( INotification aNote )
     {
         DebugTool.log("CLOSE WAVEFORM MENU COMMAND");
 
         // prevent other animations
-        if ( animationLocked ) {
+        if ( wfAnimationLocked ) {
             commandComplete();
             return;
         }
 
-        animationLocked = true;
+        wfAnimationLocked = true;
 
         // set toggle button as inactive, and animate out
         ButtonTool.setImageButtonImage(Kosm.btnWaveformToggle, R.drawable.toggle_wf);
@@ -81,8 +79,8 @@ public final class CloseWaveformMenuCommand extends OpenWaveformMenuCommand
     {
         public void onEvent( int i, aurelienribon.tweenengine.BaseTween<?> baseTween )
         {
-            DebugTool.log( "MENU ANI COMPLETE" );
-            animationLocked         = false;
+            DebugTool.log( "WAVEFORM MENU ANI COMPLETE" );
+            wfAnimationLocked       = false;
             Kosm.waveformMenuOpened = false;
             commandComplete();
         }

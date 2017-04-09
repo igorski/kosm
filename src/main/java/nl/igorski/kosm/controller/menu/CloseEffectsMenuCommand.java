@@ -23,20 +23,18 @@ import nl.igorski.kosm.R;
  */
 public final class CloseEffectsMenuCommand extends OpenWaveformMenuCommand
 {
-    public static boolean animationLocked = false; // only one animation instance at a time!
-
     @Override
     public void execute( INotification aNote )
     {
         DebugTool.log("CLOSE EFFECTS MENU COMMAND");
 
         // prevent other animations
-        if ( animationLocked ) {
+        if ( fxAnimationLocked ) {
             commandComplete();
             return;
         }
 
-        animationLocked = true;
+        fxAnimationLocked = true;
 
         // set toggle button as inactive, and animate out
         ButtonTool.setImageButtonImage(Kosm.btnEffectsToggle, R.drawable.toggle_fx);
@@ -80,8 +78,8 @@ public final class CloseEffectsMenuCommand extends OpenWaveformMenuCommand
     {
         public void onEvent( int i, BaseTween<?> baseTween )
         {
-            DebugTool.log( "MENU ANI COMPLETE" );
-            animationLocked         = false;
+            DebugTool.log( "FX MENU ANI COMPLETE" );
+            fxAnimationLocked       = false;
             Kosm.effectsMenuOpened  = false;
             commandComplete();
         }
