@@ -67,6 +67,6 @@ wavetable.cpp \
 routeableoscillator.cpp \
 kosm/audioparticleevent.cpp \
 
-LOCAL_LDLIBS := -llog -lOpenSLES
+LOCAL_LDLIBS := -llog -lOpenSLES -latomic
 
 include $(BUILD_SHARED_LIBRARY)

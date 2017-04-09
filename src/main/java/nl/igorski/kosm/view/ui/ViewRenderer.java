@@ -140,7 +140,7 @@ public final class ViewRenderer extends BaseThread
                     try {
                         mSurfaceHolder.unlockCanvasAndPost( c );
                     }
-                    catch ( IllegalArgumentException e ) {
+                    catch ( Exception e ) {
                         // java.lang.IllegalStateException: Surface has already been released
                     }
                 }

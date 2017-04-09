@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2013-2017 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -184,7 +184,7 @@ void BaseAudioEvent::mixBuffer( AudioBuffer* outputBuffer, int bufferPos,
                 {
                     readPointer -= startOffset;
 
-                    for ( int c = 0, ca = _buffer->amountOfChannels; c < ca; ++c )
+                    for ( int c = 0; c < outputChannels; ++c )
                     {
                         SAMPLE_TYPE* srcBuffer = _buffer->getBufferForChannel( c );
                         SAMPLE_TYPE* tgtBuffer = outputBuffer->getBufferForChannel( c );
