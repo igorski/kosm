@@ -71,6 +71,8 @@ you can now build and sign a releasable APK by running:
 
     gradle build
     
+after which the built and signed APK is available in _./build/outputs/apk-kosm-release.apk_
+    
 #### Application outline
 
 The main Activity _Kosm.java_ spawns an instance of *ParticleSequencer*. This is the main class
