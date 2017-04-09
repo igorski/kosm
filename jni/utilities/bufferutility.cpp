@@ -102,8 +102,8 @@ int BufferUtility::getBitRate( int sampleRate, int bitDepth, int channels )
  */
 int BufferUtility::calculateSamplesPerBeatDivision( int sampleRate, double tempo, int subdivision )
 {
-    int bytesPerBar = getSamplesPerBar( sampleRate, tempo, 4, 4 );
-    return ( int ) ( bytesPerBar / subdivision );
+    int samplesPerBar = getSamplesPerBar( sampleRate, tempo, 4, 4 );
+    return ( int ) ( samplesPerBar / subdivision );
 }
 
 /**
@@ -154,12 +154,14 @@ int BufferUtility::calculateBufferLength( int milliSeconds )
     return milliSeconds * ( AudioEngineProps::SAMPLE_RATE / 1000 );
 }
 
+/**
+ * creates a new buffer of given aBufferSize in length
+ * containing nothing but silence
+ */
 SAMPLE_TYPE* BufferUtility::generateSilentBuffer( int aBufferSize )
 {
     SAMPLE_TYPE* out = new SAMPLE_TYPE[ aBufferSize ];
-
-    for ( int i = 0; i < aBufferSize; ++i )
-        out[ i ] = 0.0;
+    memset( out, 0, aBufferSize * sizeof( SAMPLE_TYPE )); // zero bits should equal 0.0f
 
     return out;
 }

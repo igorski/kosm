@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2013-2014 Igor Zinken - http://www.igorski.nl
+ * Copyright (c) 2013-2016 Igor Zinken - http://www.igorski.nl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -21,6 +21,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "audiobuffer.h"
+#include <utilities/bufferutility.h>
 #include <algorithm>
 
 AudioBuffer::AudioBuffer( int aAmountOfChannels, int aBufferSize )
@@ -30,22 +31,16 @@ AudioBuffer::AudioBuffer( int aAmountOfChannels, int aBufferSize )
     bufferSize       = aBufferSize;
     _buffers         = new std::vector<SAMPLE_TYPE*>( amountOfChannels );
 
+    // create silent buffers for each channel
+
     for ( int i = 0; i < amountOfChannels; ++i )
-    {
-        SAMPLE_TYPE* buffer = new SAMPLE_TYPE[ bufferSize ];
-
-        for ( int j = 0; j < bufferSize; ++j )
-            buffer[ j ] = 0.0;
-
-        _buffers->at( i ) = buffer;
-    }
+        _buffers->at( i ) = BufferUtility::generateSilentBuffer( bufferSize );
 }
 
 AudioBuffer::~AudioBuffer()
 {
-    while ( !_buffers->empty())
-    {
-        delete _buffers->back(), _buffers->pop_back();
+    while ( !_buffers->empty()) {
+        delete[] _buffers->back(), _buffers->pop_back();
     }
     delete _buffers;
 }
@@ -59,37 +54,44 @@ SAMPLE_TYPE* AudioBuffer::getBufferForChannel( int aChannelNum )
 
 int AudioBuffer::mergeBuffers( AudioBuffer* aBuffer, int aReadOffset, int aWriteOffset, float aMixVolume )
 {
-    if ( aBuffer == 0 ) return 0;
+    if ( aBuffer == 0 || aWriteOffset >= bufferSize ) return 0;
 
-    int sourceLength   = aBuffer->bufferSize;
-    int writeLength    = sourceLength;
-    int writtenSamples = 0;
+    int sourceLength     = aBuffer->bufferSize;
+    int maxSourceChannel = aBuffer->amountOfChannels - 1;
+    int writeLength      = bufferSize;
+    int writtenSamples   = 0;
 
     // keep writes within the bounds of this buffer
 
-    if (( aWriteOffset + writeLength ) > bufferSize )
+    if (( aWriteOffset + writeLength ) >= bufferSize )
         writeLength = bufferSize - aWriteOffset;
 
-    for ( int i = 0; i < amountOfChannels; ++i )
-    {
-        SAMPLE_TYPE* srcBuffer    = aBuffer->getBufferForChannel( i );
-        SAMPLE_TYPE* targetBuffer = getBufferForChannel( i );
+    int maxWriteOffset = aWriteOffset + writeLength;
+    int c;
 
-        for ( int j = aWriteOffset, l = aWriteOffset + writeLength, r = aReadOffset; j < l; ++j, ++r )
+    for ( c = 0; c < amountOfChannels; ++c )
+    {
+        if ( c > maxSourceChannel )
+            break;
+
+        SAMPLE_TYPE* srcBuffer    = aBuffer->getBufferForChannel( c );
+        SAMPLE_TYPE* targetBuffer = getBufferForChannel( c );
+
+        for ( int i = aWriteOffset, r = aReadOffset; i < maxWriteOffset; ++i, ++r )
         {
             if ( r >= sourceLength )
             {
-                if ( loopeable )
+                if ( aBuffer->loopeable )
                     r = 0;
                 else
                     break;
             }
-            targetBuffer[ j ] += ( srcBuffer[ r ] * aMixVolume );
+            targetBuffer[ i ] += ( srcBuffer[ r ] * aMixVolume );
             ++writtenSamples;
         }
     }
     // return the amount of samples written (per buffer)
-    return writtenSamples;
+    return ( c == 0 ) ? writtenSamples : writtenSamples / c;
 }
 
 /**
@@ -98,13 +100,10 @@ int AudioBuffer::mergeBuffers( AudioBuffer* aBuffer, int aReadOffset, int aWrite
  */
 void AudioBuffer::silenceBuffers()
 {
-    for ( int i = 0; i < amountOfChannels; ++i )
-    {
-        SAMPLE_TYPE* buffer = getBufferForChannel( i );
+    // use mem set to quickly erase existing buffer contents, zero bits should equal 0.0f
 
-        for ( int j = 0; j < bufferSize; ++j )
-            buffer[ j ] = 0.0;
-    }
+    for ( int i = 0; i < amountOfChannels; ++i )
+        memset( getBufferForChannel( i ), 0, bufferSize * sizeof( SAMPLE_TYPE ));
 }
 
 void AudioBuffer::adjustBufferVolumes( SAMPLE_TYPE amp )
