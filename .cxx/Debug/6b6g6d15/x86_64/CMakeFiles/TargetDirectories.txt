@@ -1,0 +1,4 @@
+/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/x86_64/CMakeFiles/mwengine_wrapped.dir
+/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/x86_64/CMakeFiles/rebuild_cache.dir
+/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/x86_64/CMakeFiles/edit_cache.dir
+/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/x86_64/CMakeFiles/mwengine.dir

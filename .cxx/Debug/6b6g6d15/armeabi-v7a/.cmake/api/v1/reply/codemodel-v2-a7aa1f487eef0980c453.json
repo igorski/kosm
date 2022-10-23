@@ -1,0 +1,68 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.6.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "MWEngine",
+					"targetIndexes" : 
+					[
+						0,
+						1
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "mwengine::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mwengine-Debug-c3bf172caf4e0e369e44.json",
+					"name" : "mwengine",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "mwengine_wrapped::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-mwengine_wrapped-Debug-58f1eab41e2cc0c369a8.json",
+					"name" : "mwengine_wrapped",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/armeabi-v7a",
+		"source" : "/Users/igorzinken/Documents/Werk/Projecten/kosm"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 1
+	}
+}

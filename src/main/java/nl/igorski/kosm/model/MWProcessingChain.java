@@ -1,7 +1,7 @@
 package nl.igorski.kosm.model;
 
-import nl.igorski.lib.audio.MWEngine;
-import nl.igorski.lib.audio.nativeaudio.*;
+import nl.igorski.mwengine.MWEngine;
+import nl.igorski.mwengine.core.*;
 
 /**
  * Created with IntelliJ IDEA.

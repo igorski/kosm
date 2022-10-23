@@ -1,13 +1,13 @@
 package nl.igorski.lib.audio.vo.instruments;
 
 import nl.igorski.kosm.model.MWProcessingChain;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
 
-import nl.igorski.lib.audio.nativeaudio.Arpeggiator;
-import nl.igorski.lib.audio.nativeaudio.BufferUtility;
-import nl.igorski.lib.audio.nativeaudio.SynthInstrument;
+import nl.igorski.mwengine.core.Arpeggiator;
+import nl.igorski.mwengine.core.BufferUtility;
+import nl.igorski.mwengine.core.SynthInstrument;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,0 +1,7 @@
+Executable : /Library/AndroidSDK/cmake/3.18.1/bin/ninja
+arguments : 
+-C
+/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/x86
+mwengine_wrapped
+jvmArgs : 
+

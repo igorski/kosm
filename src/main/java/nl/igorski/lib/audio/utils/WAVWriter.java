@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.utils;
 
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.storage.FileSystem;
 import uk.labbookpages.wave.WavFile;

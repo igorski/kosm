@@ -1,5 +1,4 @@
-Kosm
-====
+# Kosm
 
 an open source abstract audio application for Android. Kosm uses the accelerometer of your device to
 trigger state changes in its audio engine which in turn responds by synthesizing audio on the fly. In
@@ -7,21 +6,31 @@ other words : Kosm is a "gravity sequencer", or something.
 
 Keywords : chaos, chance, microtonal.
 
+## A word of codebase caution
+
+Kosm is an old, old lady. The code base has been updated to work with modern Gradle based toolchains
+and to be available to work on Google Plays latest platform requirements, but the code base goes back
+quite a few years. Heck, it was originally built for Android 2.3.
+
 ### MWEngine audio engine
 
 Kosm is built on top of MWEngine, an open source audio engine for Android by igorski. MWEngine is
-written in C++, using OpenSL for low latency performance. The engine has been written for the MikroWave
-synthesis/sequencing-application and works from API level 9 (Android 2.3/Gingerbread) and up. Though the
-engine is written in C++  (and can be used solely within this context), the library is built using JNI
-(Java Native Interface) allowing its methods to be exposed to Java while still executing in a native layer
-outside of the Dalvik/ART VM. In other words : high performance of the engine is ensured by the native layer
-operations, while ease of development is ensured by keeping application logic / UI within the realm of the
-Android Java SDK. For more details and plenty of Wiki documentation you can go to the MWEngine repository :
+written in C++, using OpenSL for low latency performance. Though the engine is written in C++ (and can be
+used solely within this context), the library is built using JNI (Java Native Interface) allowing its methods
+to be exposed to Java while still executing in a native layer outside of the Dalvik/ART VM.
 
-https://github.com/igorski/MWEngine
+In other words : high performance of the engine is ensured by the native layer  operations, while ease of
+development is ensured by keeping application logic / UI within the realm of the Android Java SDK. For more
+details and plenty of Wiki documentation you can go to the MWEngine repository :
 
-Kosm inherits most of the basic MWEngine classes, see the _/jni/kosm_-folder for the rendering of
-Kosm-specific "AudioParticleEvents".
+[https://github.com/igorski/MWEngine](MWEngine on Github)
+
+Note: the supplied JNI code in this repository is a fork of an older MWEngine version. If you wish to use
+MWEngine with the latest performance improvements, processors and AAudio support, visit the aforementioned
+project URL. It is recommended to build MWEngine as an .AAR library instead of copying files and makelists.
+
+Kosm inherits most of the basic MWEngine classes, with the `/jni/kosm`-folder containing the
+Kosm-specific "AudioParticleEvent" class.
 
 ### APE Physics engine
 
@@ -38,44 +47,47 @@ audio engine. All build commands bar the compilation of the audio engine code is
 
 #### Compiling the audio engine
 
-The makefile (_/jni/Android.mk_) will compile the MWEngine audio engine with all available modules.
-
-Those of a Unix-bent can run the _build.sh_-file in the root folder of the repository whereas Windows users can run the _build.bat_-file
-that resides in the same directory, just make sure "_ndk-build_" and "_swig_" are globally available through the PATH settings of your
-system (or adjust the shell scripts accordingly).
-
-After compiling the C++ code, the _nl.igorski.lib.audio.nativeaudio_-namespace should be available to Java.
+The makefile `CMakeLists.txt` will compile the MWEngine audio engine with all available modules.
+After compiling the C++ code, the `nl.igorski.mwengine.core`-namespace should be available to Java.
 
 #### Resolving dependencies
 
-Run the Gradle target "_externals_" to pull all dependent libraries from Github, e.g.:
+Run the Gradle target `externals` to pull all dependent libraries from Github, e.g.:
 
-    gradle externals
+```
+gradle externals
+```
 
 #### Building the main application
 
-The usual Gradle suspects such as "_clean_", "_build_", etc. are present. To instantly deploy a debug version of the
+The usual Gradle suspects such as `clean`, `build`, etc. are present. To instantly deploy a debug version of the
 application onto an attached Android device / emulator, run :
 
-    gradle installDebug
-    
+```
+gradle installDebug
+```
+
 To create a signed release build, add the following into your Gradle's properties file (_~/.gradle/gradle.properties_)
 and replace the values accordingly:
 
-    RELEASE_STORE_FILE={path_to_.keystore_file}
-    RELEASE_STORE_PASSWORD={password_for_.keystore}
-    RELEASE_KEY_ALIAS={alias_for_.keystore}
-    RELEASE_KEY_PASSWORD={password_for_.keystore}
-    
+```
+RELEASE_STORE_FILE={path_to_.keystore_file}
+RELEASE_STORE_PASSWORD={password_for_.keystore}
+RELEASE_KEY_ALIAS={alias_for_.keystore}
+RELEASE_KEY_PASSWORD={password_for_.keystore}
+```
+
 you can now build and sign a releasable APK by running:
 
-    gradle build
-    
-after which the built and signed APK is available in _./build/outputs/apk-kosm-release.apk_
+```
+gradle build
+```
+
+after which the built and signed APK is available in `./build/outputs/apk-kosm-release.apk`
     
 #### Application outline
 
-The main Activity _Kosm.java_ spawns an instance of *ParticleSequencer*. This is the main class
+The main Activity `Kosm.java` spawns an instance of *ParticleSequencer*. This is the main class
 responsible for the applications behaviour.
 
 Inside the ParticleSequencer there are two threads running :

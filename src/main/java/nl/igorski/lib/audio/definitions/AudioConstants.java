@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.definitions;
 
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 
 /**
  * Created by IntelliJ IDEA.

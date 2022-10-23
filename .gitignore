@@ -4,12 +4,14 @@ intelliJ project/
 *.iml
 .idea
 .gradle
+local.properties
 build/
 obj/
-jni/jni/java_interface_wrap.cpp
 libs/armeabi/*
 libs/armeabi-v7a/*
+libs/arm64-v8a/*
 libs/x86/*
+libs/x86_64/*
 libs/mips/*
-libs/nineoldandroids/*
-src/main/java/nl/igorski/lib/audio/nativeaudio/*
+libs/nineoldandroids
+src/main/java/nl/igorski/mwengine/core/*

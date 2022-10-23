@@ -1,7 +1,7 @@
 package nl.igorski.kosm.config;
 
-import nl.igorski.lib.audio.nativeaudio.BufferUtility;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.core.BufferUtility;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.utils.storage.FileSystem;
 
 import java.io.File;

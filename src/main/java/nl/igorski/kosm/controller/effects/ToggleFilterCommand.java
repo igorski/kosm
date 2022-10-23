@@ -12,7 +12,7 @@ import nl.igorski.kosm.R;
 import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.definitions.ParticleSounds;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
-import nl.igorski.lib.audio.nativeaudio.RouteableOscillator;
+import nl.igorski.mwengine.core.RouteableOscillator;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;

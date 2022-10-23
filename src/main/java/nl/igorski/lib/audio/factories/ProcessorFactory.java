@@ -2,10 +2,10 @@ package nl.igorski.lib.audio.factories;
 
 import nl.igorski.kosm.definitions.KosmConstants;
 import nl.igorski.kosm.model.MWProcessingChain;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.audio.definitions.AudioConstants;
 import nl.igorski.lib.audio.definitions.OscillatorDestinations;
-import nl.igorski.lib.audio.nativeaudio.*;
+import nl.igorski.mwengine.core.*;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 
 /**

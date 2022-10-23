@@ -1,6 +1,6 @@
 package nl.igorski.kosm.util;
 
-import nl.igorski.lib.audio.nativeaudio.BaseAudioEvent;
+import nl.igorski.mwengine.core.BaseAudioEvent;
 import nl.igorski.lib.utils.time.Timeout;
 
 import java.util.Vector;
