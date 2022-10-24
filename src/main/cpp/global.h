@@ -61,6 +61,8 @@ namespace AudioEngineProps
 const SAMPLE_TYPE PI     = atan( 1 ) * 4;
 const SAMPLE_TYPE TWO_PI = PI * 2.0;
 
-extern void *print_message( void* );
+// can be used to prevent denormals
+// init envelopes to DC_OFFSET prior to processing, add to input before envelope proces
+const float DC_OFFSET = 1.0E-25;
 
 #endif

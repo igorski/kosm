@@ -150,21 +150,18 @@ public final class ProcessorFactory
     {
         Compressor c;
 
-        if ( chain.compressor == null )
-        {
-            c = new Compressor( chain.cThreshold, chain.cAttack, chain.cRelease, chain.cRatio );
+        if ( chain.compressor == null ) {
+            c = new Compressor();
             chain.compressor = c;
-        }
-        else
-        {
+        } else {
             c = chain.compressor;
-
-            c.setThreshold( chain.cThreshold );
-            c.setAttack   ( chain.cAttack );
-            c.setRelease  ( chain.cRelease );
-            c.setRatio    ( chain.cRatio );
-            //c.setGain     ( chain.getCGain());
         }
+        c.setThreshold( chain.cThreshold );
+        c.setAttack   ( chain.cAttack );
+        c.setRelease  ( chain.cRelease );
+        c.setRatio    ( chain.cRatio );
+        //c.setGain     ( chain.getCGain());
+
         return c;
     }
 

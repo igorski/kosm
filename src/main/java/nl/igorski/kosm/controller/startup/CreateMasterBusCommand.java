@@ -29,7 +29,7 @@ public final class CreateMasterBusCommand extends BaseSimpleCommand
 
         // compressor
 
-        final Compressor compressor = ProcessorFactory.createCompressor(ParticleSequencer.masterBus);
+        final Compressor compressor = ProcessorFactory.createCompressor( ParticleSequencer.masterBus );
         ParticleSequencer.masterBus.compressorActive = true;
 
         compressor.setThreshold( -34f );

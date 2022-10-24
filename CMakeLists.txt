@@ -68,6 +68,7 @@ set(MWENGINE_CORE_SOURCES ${CPP_SRC}/global.cpp
                           ${CPP_SRC}/modules/envelopefollower.cpp
                           ${CPP_SRC}/modules/lfo.cpp
                           ${CPP_SRC}/modules/routeableoscillator.cpp
+                          ${CPP_SRC}/processors/basedynamicsprocessor.cpp
                           ${CPP_SRC}/processors/baseprocessor.cpp
                           ${CPP_SRC}/utilities/bufferutility.cpp
                           ${CPP_SRC}/utilities/bulkcacher.cpp
@@ -87,13 +88,8 @@ set(MWENGINE_SYNTH_SOURCES ${CPP_SRC}/events/basesynthevent.cpp
 
 # effects processors
 
-set(MWENGINE_PROCESSORS ${CPP_SRC}/chunkware/SimpleEnvelope.cpp
-                        ${CPP_SRC}/chunkware/SimpleGate.cpp
-                        ${CPP_SRC}/chunkware/SimpleComp.cpp
-                        ${CPP_SRC}/chunkware/SimpleLimit.cpp
-                        ${CPP_SRC}/processors/bitcrusher.cpp
+set(MWENGINE_PROCESSORS ${CPP_SRC}/processors/bitcrusher.cpp
                         ${CPP_SRC}/processors/compressor.cpp
-                        ${CPP_SRC}/processors/dcoffsetfilter.cpp
                         ${CPP_SRC}/processors/decimator.cpp
                         ${CPP_SRC}/processors/delay.cpp
                         ${CPP_SRC}/processors/filter.cpp

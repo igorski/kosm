@@ -24,60 +24,54 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-#include "compressor.h"
+#include "basedynamicsprocessor.h"
 
 namespace MWEngine {
 
-/* constructor / destructor */
-
-Compressor::Compressor() : BaseDynamicsProcessor( 10.0, 100.0 )
+EnvelopeDetector::EnvelopeDetector( float ms, float sampleRate )
 {
-    setThreshold( 0.0 );
-    setRatio( 1.0 );
-    setSampleRate( AudioEngineProps::SAMPLE_RATE );
-    init();
+    _sampleRate = sampleRate;
+    setTimeConstant( ms );
 }
 
-Compressor::~Compressor()
+void EnvelopeDetector::setTimeConstant( float ms )
+{
+    _timeConstant = std::max( 0.f, ms );
+    cacheCoefficient();
+}
+
+void EnvelopeDetector::setSampleRate( float sampleRate )
+{
+    _sampleRate = sampleRate;
+    cacheCoefficient();
+}
+
+void EnvelopeDetector::cacheCoefficient()
+{
+    _coefficient = exp( -1000.f / ( _timeConstant * _sampleRate ) );
+}
+
+BaseDynamicsProcessor::BaseDynamicsProcessor( float attackInMs, float releaseInMs, int sampleRate )
+    : _attackEnvelope( attackInMs, ( float ) sampleRate )
+    , _releaseEnvelope( releaseInMs, ( float ) sampleRate )
 {
 
 }
 
-/* getters / setters */
-
-void Compressor::setThreshold( float dB )
+void BaseDynamicsProcessor::setAttack( float ms )
 {
-    _thresholdDb = std::max( MIN_THRESHOLD_VALUE, std::min( MAX_THRESHOLD_VALUE, dB ));
+    _attackEnvelope.setTimeConstant( ms );
 }
 
-void Compressor::setRatio( float ratio )
+void BaseDynamicsProcessor::setRelease( float ms )
 {
-    _ratio = std::max( 0.f, ratio );
+    _releaseEnvelope.setTimeConstant( ms );
 }
 
-/* public methods */
-
-void Compressor::init()
+void BaseDynamicsProcessor::setSampleRate( int sampleRate )
 {
-    _overThreshEnvDb = DC_OFFSET;
-}
-
-void Compressor::process( AudioBuffer* sampleBuffer, bool isMonoSource )
-{
-    int bufferSize = sampleBuffer->bufferSize;
-    bool isMonoBuffer = sampleBuffer->amountOfChannels == 1;
-
-    SAMPLE_TYPE* leftChannel  = sampleBuffer->getBufferForChannel( 0 );
-    SAMPLE_TYPE* rightChannel = isMonoBuffer ? leftChannel : sampleBuffer->getBufferForChannel( 1 );
-
-    for ( int i = 0; i < bufferSize; ++i ) {
-        processInternal( leftChannel[ i ], rightChannel[ i ] );
-    }
-}
-
-bool Compressor::isCacheable()
-{
-    return true;
+    _attackEnvelope.setSampleRate(( float ) sampleRate );
+    _releaseEnvelope.setSampleRate(( float ) sampleRate );
 }
 
 } // E.O. namespace MWEngine
