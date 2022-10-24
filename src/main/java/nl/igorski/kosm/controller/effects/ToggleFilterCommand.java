@@ -79,7 +79,7 @@ public class ToggleFilterCommand extends BaseSimpleCommand
         formantChain.cacheActiveProcessors();
 
         final int buttonResourceId = activated ? R.drawable.icon_filter_active : R.drawable.icon_filter;
-        ButtonTool.setImageButtonImage( Kosm.btnFilter, buttonResourceId );
+        ButtonTool.setImageButtonImage( Kosm.getBtnFilter(), buttonResourceId );
 
         super.execute( aNote ); // completes command
     }

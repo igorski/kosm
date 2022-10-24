@@ -47,7 +47,7 @@ public class WriteRecordingCommand extends BaseAsyncCommand
         final String directory = Config.OUTPUT_DIRECTORY;
         final String fileName  = RecordingUtil.generateFilename();
 
-        WAVWriter.mergeWAVFiles(CacheReader.getCachedRecording(), directory + File.separator + FileSystem.sanitizeFileName(fileName));
+        WAVWriter.mergeWAVFiles( CacheReader.getCachedRecording(), directory + File.separator + FileSystem.sanitizeFileName( fileName ));
         CacheWriter.flushCache();
 
         DebugTool.log( "CACHED OUTPUT WRITTEN TO WAVE FILE" );

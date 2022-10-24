@@ -17,9 +17,9 @@ quite a few years. Heck, it was originally built for Android 2.3.
 Kosm is built on top of MWEngine, an open source audio engine for Android by igorski. MWEngine is
 written in C++, using OpenSL for low latency performance. Though the engine is written in C++ (and can be
 used solely within this context), the library is built using JNI (Java Native Interface) allowing its methods
-to be exposed to Java while still executing in a native layer outside of the Dalvik/ART VM.
+to be exposed to Java/Kotlin while still executing in a native layer outside of the Dalvik/ART VM.
 
-In other words : high performance of the engine is ensured by the native layer  operations, while ease of
+In other words : high performance of the engine is ensured by the native layer operations, while ease of
 development is ensured by keeping application logic / UI within the realm of the Android Java SDK. For more
 details and plenty of Wiki documentation you can go to the MWEngine repository :
 
@@ -49,14 +49,6 @@ audio engine. All build commands bar the compilation of the audio engine code is
 
 The makefile `CMakeLists.txt` will compile the MWEngine audio engine with all available modules.
 After compiling the C++ code, the `nl.igorski.mwengine.core`-namespace should be available to Java.
-
-#### Resolving dependencies
-
-Run the Gradle target `externals` to pull all dependent libraries from Github, e.g.:
-
-```
-gradle externals
-```
 
 #### Building the main application
 

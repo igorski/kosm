@@ -33,7 +33,7 @@ public class ToggleDelayCommand extends BaseSimpleCommand
         processingChain.cacheActiveProcessors();
 
         final int buttonResourceId = activated ? R.drawable.icon_delay_active : R.drawable.icon_delay;
-        ButtonTool.setImageButtonImage( Kosm.btnDelay, buttonResourceId );
+        ButtonTool.setImageButtonImage( Kosm.getBtnDelay(), buttonResourceId );
 
         super.execute( aNote ); // completes command
     }

@@ -1,4 +1,0 @@
-/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/armeabi-v7a/CMakeFiles/mwengine_wrapped.dir
-/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/armeabi-v7a/CMakeFiles/edit_cache.dir
-/Users/igorzinken/Documents/Werk/Projecten/kosm/.cxx/Debug/6b6g6d15/armeabi-v7a/CMakeFiles/mwengine.dir

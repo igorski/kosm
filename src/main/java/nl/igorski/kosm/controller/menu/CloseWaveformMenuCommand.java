@@ -36,12 +36,16 @@ public final class CloseWaveformMenuCommand extends OpenWaveformMenuCommand
 
         wfAnimationLocked = true;
 
-        // set toggle button as inactive, and animate out
-        ButtonTool.setImageButtonImage(Kosm.btnWaveformToggle, R.drawable.toggle_wf);
+        ImageButton btnWaveformToggle = Kosm.getBtnWaveformToggle();
 
-        Animator.execute(Tween.to(Kosm.btnWaveformToggle, AnimationProps.POSITION_Y, .5f).
-                target(-getButtonBottomCoordinate(Kosm.btnWaveformToggle)).
-                ease(Cubic.IN)).setCallback( new toggleAnimationComplete() );
+        // set toggle button as inactive, and animate out
+        ButtonTool.setImageButtonImage( btnWaveformToggle, R.drawable.toggle_wf );
+
+        Animator.execute(
+            Tween.to( btnWaveformToggle, AnimationProps.POSITION_Y, .5f).
+            target( -getButtonBottomCoordinate( btnWaveformToggle )).
+            ease( Cubic.IN )
+        ).setCallback( new toggleAnimationComplete() );
     }
 
     /* event handlers */
@@ -50,9 +54,10 @@ public final class CloseWaveformMenuCommand extends OpenWaveformMenuCommand
     {
         public void onEvent( int i, BaseTween<?> baseTween )
         {
-            final ImageButton[] buttons = new ImageButton[]{ Kosm.btnSine, Kosm.btnSaw, Kosm.btnTwang,
-                                                             Kosm.btnKick, Kosm.btnSnare };
-
+            final ImageButton[] buttons = new ImageButton[]{
+                Kosm.getBtnSine(), Kosm.getBtnSaw(), Kosm.getBtnTwang(),
+                Kosm.getBtnKick(), Kosm.getBtnSnare()
+            };
             int animatedButtons = -1;
 
             for ( final ImageButton button : buttons )
@@ -69,7 +74,7 @@ public final class CloseWaveformMenuCommand extends OpenWaveformMenuCommand
 
             // slide toggle button back in
 
-            Animator.execute( Tween.to( Kosm.btnWaveformToggle, AnimationProps.POSITION_Y, .7f ).
+            Animator.execute( Tween.to( Kosm.getBtnWaveformToggle(), AnimationProps.POSITION_Y, .7f ).
                                         target( 0 )).ease( Cubic.OUT ).delay( animatedButtons * .1f ).
                                         setCallback( new menuAnimationComplete() );
         }

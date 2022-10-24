@@ -4,14 +4,9 @@ intelliJ project/
 *.iml
 .idea
 .gradle
+.cxx
 local.properties
 build/
 obj/
-libs/armeabi/*
-libs/armeabi-v7a/*
-libs/arm64-v8a/*
-libs/x86/*
-libs/x86_64/*
-libs/mips/*
 libs/nineoldandroids
 src/main/java/nl/igorski/mwengine/core/*

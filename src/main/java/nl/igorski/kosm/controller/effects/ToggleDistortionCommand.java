@@ -35,7 +35,7 @@ public class ToggleDistortionCommand extends BaseSimpleCommand
 
         final int buttonResourceId = activated ? R.drawable.icon_distortion_active : R.drawable.icon_distortion;
 
-        ButtonTool.setImageButtonImage( Kosm.btnDistortion, buttonResourceId );
+        ButtonTool.setImageButtonImage( Kosm.getBtnDistortion(), buttonResourceId );
 
         super.execute( aNote ); // completes command
     }

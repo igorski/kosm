@@ -45,11 +45,15 @@
 #include "kosm/audioparticleevent.h"
 %}
 
+// declare the value for the SAMPLE_TYPE typedef (defined in global.h)
+// omitting this will create a custom SWIG wrapper instead of a float/double primitive
+typedef double SAMPLE_TYPE;
+
 // Enable the JNI class to load the required native library.
 %pragma(java) jniclasscode=%{
   static {
     try {
-        java.lang.System.loadLibrary( "mwengine" );
+        java.lang.System.loadLibrary( "mwengine_wrapped" );
     }
     catch ( UnsatisfiedLinkError e ) {
         java.lang.System.err.println( "mwengine native code library failed to load.\n" + e );

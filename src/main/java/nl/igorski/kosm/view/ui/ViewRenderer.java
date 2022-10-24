@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.text.TextPaint;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -45,28 +44,29 @@ public final class ViewRenderer extends BaseThread
     private float _startY    = 0;
     private long  _downStart = 0;
 
+    private static final int TOUCH_MODE_NONE   = 0;
+    private static final int TOUCH_MODE_ZOOM   = 1;
+
     private float      oldFingerDistance = 1f;
     private float      newFingerDistance = 1f;
-    private static int TOUCH_MODE_NONE   = 0;
-    private static int TOUCH_MODE_ZOOM   = 1;
     private int        touchMode         = TOUCH_MODE_NONE;
     public int         sequencerMode     = SequencerModes.MODE_DEFAULT;
 
     /* container zoom related */
 
-    private static float MAX_ZOOM = 1.5f;
-    private static float MIN_ZOOM = .15f;
+    private static final float MAX_ZOOM = 1.5f;
+    private static final float MIN_ZOOM = .15f;
 
     /* physics related */
 
     private ParticleEmitterVO _emitterVO;
     private AbstractParticle _tappedObject = null;
-    private PhysicsWorld     _physicsWorld = new PhysicsWorld();
+    private final PhysicsWorld _physicsWorld = new PhysicsWorld();
 
     /* instructions */
 
     public Instructions instructions;
-    public boolean      showInstructions = false;
+    public boolean      showInstructions;
     public int[]        modeInstructions = new int[]{ SequencerModes.MODE_360,
                                                       SequencerModes.MODE_EMITTER,
                                                       SequencerModes.MODE_HOLD,
@@ -74,11 +74,11 @@ public final class ViewRenderer extends BaseThread
 
     /* whether the surface has been created & is ready to draw */
 
-    private SurfaceHolder     mSurfaceHolder;
-    private ParticleSequencer container;
+    private final SurfaceHolder     mSurfaceHolder;
+    private final ParticleSequencer container;
     private int               alpha = 0;
 
-    public ViewRenderer( SurfaceHolder surfaceHolder, ParticleSequencer aContainer, Context context, Handler handler )
+    public ViewRenderer( SurfaceHolder surfaceHolder, ParticleSequencer aContainer )
     {
         container        = aContainer;
         mSurfaceHolder   = surfaceHolder;
@@ -149,11 +149,9 @@ public final class ViewRenderer extends BaseThread
             {
                 while ( _paused )
                 {
-                    try
-                    {
+                    try {
                         _pauseLock.wait();
-                    }
-                    catch ( InterruptedException e ) {}
+                    } catch ( InterruptedException ignored) {}
                 }
             }
         }
@@ -163,12 +161,12 @@ public final class ViewRenderer extends BaseThread
 
     public void setSurfaceSize( int width, int height )
     {
-        // synchronized to make sure these all change atomically
-        synchronized ( mSurfaceHolder )
-        {
-//                mCanvasWidth = width;
-//                mCanvasHeight = height;
-        }
+//        // synchronized to make sure these all change atomically
+//        synchronized ( mSurfaceHolder )
+//        {
+//            mCanvasWidth = width;
+//            mCanvasHeight = height;
+//        }
     }
 
     public void switchMode( final int newMode )
@@ -236,28 +234,18 @@ public final class ViewRenderer extends BaseThread
      */
     public final boolean doKeyDown( int keyCode, KeyEvent msg )
     {
-        boolean handled = false;
         synchronized ( mSurfaceHolder )
         {
             switch ( keyCode )
             {
+                default:
+                    return false;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    handled = true;
-                    break;
+                    return true;
             }
-            return handled;
         }
     }
 
@@ -271,28 +259,18 @@ public final class ViewRenderer extends BaseThread
      */
     public final boolean doKeyUp( int keyCode, KeyEvent msg )
     {
-        boolean handled = false;
         synchronized ( mSurfaceHolder )
         {
             switch ( keyCode )
             {
+                default:
+                    return false;
                 case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_LEFT:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_UP:
-                    handled = true;
-                    break;
-
                 case KeyEvent.KEYCODE_DPAD_DOWN:
-                    handled = true;
-                    break;
+                    return true;
             }
-            return handled;
         }
     }
 
@@ -322,18 +300,15 @@ public final class ViewRenderer extends BaseThread
 
                 if ( sequencerMode != SequencerModes.MODE_RESETTER )
                 {
-                    synchronized ( particles )
+                    for ( final AudioParticle s : particles )
                     {
-                        for ( final AudioParticle s : particles )
-                        {
-                            final boolean clickedParticle = s.handleTouchDown(_fingerX, _fingerY);
+                        final boolean clickedParticle = s.handleTouchDown(_fingerX, _fingerY);
 
-                            if ( clickedParticle )
-                            {
-                                //DebugTool.log( "TAPPED ON PARTICLE" );
-                                _tappedObject = s;
-                                break;
-                            }
+                        if ( clickedParticle )
+                        {
+                            //DebugTool.log( "TAPPED ON PARTICLE" );
+                            _tappedObject = s;
+                            break;
                         }
                     }
                 }
@@ -390,7 +365,7 @@ public final class ViewRenderer extends BaseThread
                     }
                     else if ( sequencerMode == SequencerModes.MODE_RESETTER )
                     {
-                        if ( _downStart > 0 && elapsed > 1500l )
+                        if ( _downStart > 0 && elapsed > 1500L )
                         {
                             destroy360container();
                             ParticleSequencer.destroyEmitters();

@@ -22,7 +22,7 @@ android {
         applicationId "nl.igorski.kosm"
         minSdkVersion 23
         targetSdkVersion 32
-        versionCode 18
+        versionCode 17
         versionName "2.1.0"
 
         ndk {
@@ -70,13 +70,6 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            java.srcDirs    = [ 'src/main/java', 'libs/nineoldandroids/library/src' ]
-            jniLibs.srcDirs = [ 'libs' ]
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -89,12 +82,4 @@ clean.doFirst {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar' ])
-}
-
-task externals {
-    File dir = new File('libs/nineoldandroids')
-    if (!dir.exists()) {
-        workingDir project.rootDir + 'libs'
-        commandLine 'git', 'clone', 'https://github.com/JakeWharton/NineOldAndroids.git'
-    }
 }

@@ -1,6 +1,9 @@
 package nl.igorski.kosm.view;
 
+import android.Manifest;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -40,8 +43,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import nl.igorski.lib.utils.notifications.Confirm;
 import nl.igorski.kosm.view.physics.components.AudioParticle;
@@ -77,20 +78,19 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
 
     /* model */
 
-    private SettingsProxy _settingsProxy;
+    private final SettingsProxy _settingsProxy;
 
     /* audio related */
 
-    public static MWProcessingChain  masterBus;   // strong reference to avoid C++ destructors being invoked
-    private KosmInstruments _instruments; // strong reference to avoid C++ destructors being invoked
-    private MWProcessingChain       _filterBus;
-    private MWProcessingChain       _formantBus;
-    private Vector<AudioParticle>   _particles;
+    public static MWProcessingChain masterBus;  // strong reference to avoid C++ destructors being invoked
+
+    private final KosmInstruments _instruments; // strong reference to avoid C++ destructors being invoked
+    private final MWProcessingChain     _filterBus;
+    private final MWProcessingChain     _formantBus;
+    private final Vector<AudioParticle> _particles;
     private Vector<ParticleEmitter> _emitters;
 
-    private long _lastEmitterUpdate = 0l;
-
-    public ParticleSounds            particleSound = ParticleSounds.PARTICLE_SINE;
+    public ParticleSounds particleSound = ParticleSounds.PARTICLE_SINE;
 
     /* device coordinates */
 
@@ -100,14 +100,15 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
 
     /* used for transforming the rotation across devices */
 
-    private boolean ready         = false;
-    private float[] gravityValues = new float[ 3 ];
-    private float[] geomagValues  = new float[ 3 ];
-    private float[] inR           = new float[ 9 ];
-    private float[] outR          = new float[ 9 ];
-    private float[] prefValues    = new float[ 3 ];
+    private boolean ready = false;
 
-    private Display _display;
+    private final float[] gravityValues = new float[ 3 ];
+    private final float[] geomagValues  = new float[ 3 ];
+    private final float[] prefValues    = new float[ 3 ];
+    private final float[] inR           = new float[ 9 ];
+    private float[] outR                = new float[ 9 ];
+
+    private final Display _display;
     private int deviceRot; // prevent garbage collector hitting us by strongly referencing it
 
     // TODO: enter the PROPER remapCoordinates in the switch in the touch handler-method
@@ -136,10 +137,13 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         SurfaceHolder holder = getHolder();
         holder.addCallback( this );
 
+        DisplayMetrics metrics = new DisplayMetrics();
         WindowManager wm = ( WindowManager ) context.getSystemService( Context.WINDOW_SERVICE );
-        _display         = wm.getDefaultDisplay();
-        width            = _display.getWidth();
-        height           = _display.getHeight();
+        _display = wm.getDefaultDisplay();
+        _display.getMetrics( metrics );
+
+        width  = metrics.widthPixels;
+        height = metrics.heightPixels;
 
         // register to receive sensor events
         SensorManager sm = ( SensorManager ) context.getSystemService( Context.SENSOR_SERVICE );
@@ -344,10 +348,10 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
      */
     public void updateEmitters()
     {
-        _lastEmitterUpdate = System.currentTimeMillis();
+        long _lastEmitterUpdate = System.currentTimeMillis();
 
         for ( final ParticleEmitter emitter : _emitters )
-            emitter.update( _lastEmitterUpdate );
+            emitter.update(_lastEmitterUpdate);
     }
 
     public static void destroyFixed()
@@ -397,66 +401,63 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
 
     public void setRecordListener( final ImageButton aRecordButton )
     {
-        aRecordButton.setOnClickListener( new OnClickListener()
-        {
-            @Override
-            public void onClick( View v )
+        aRecordButton.setOnClickListener( v -> {
+            final boolean newRecordingState = !_mwengine.getRecordingState();
+
+            if ( !newRecordingState ) // stop recording
             {
-                final boolean newRecordingState = !_mwengine.getRecordingState();
+                ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record );
 
-                if ( !newRecordingState ) // stop recording
-                {
-                    ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record );
-
-                    // renderer has written a recording ? save it to SD card
-                    handleRecordingUpdate( true );
-                }
-                else // start recording
-                {
-                    // FIRST: check if there is space available for writing 30 seconds of audio
-                    if ( !Config.canRecord())
-                    {
-                        Alert.show( Core.getContext(), R.string.error_rec_space );
-                    }
-                    else
-                    {
-                        // just started recording ? show message
-                        Alert.show( Core.getContext(), R.string.rec_started );
-                        ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record_active );
-
-                        createRecording();
-                    }
-                }
-                _mwengine.setRecordingState(newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator);
+                // renderer has written a recording ? save it to SD card
+                handleRecordingUpdate( true );
             }
+            else // start recording
+            {
+                // FIRST: permissions check
+                // these may not necessarily all be required for your use case (e.g. if you're not recording
+                // from device audio inputs or reading/writing files) but are here for self-documentation
+
+                String[] PERMISSIONS = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                };
+                // Check if we have all the necessary permissions, if not: prompt user
+                int permission = Core.getActivity().checkSelfPermission( Manifest.permission.RECORD_AUDIO );
+                if ( permission != PackageManager.PERMISSION_GRANTED ) {
+                    Core.getActivity().requestPermissions( PERMISSIONS, 12345678 );
+                }
+
+                // SECOND: check if there is space available for writing 30 seconds of audio
+                if ( !Config.canRecord())
+                {
+                    Alert.show( Core.getContext(), R.string.error_rec_space );
+                }
+                else
+                {
+                    // just started recording ? show message
+                    Alert.show( Core.getContext(), R.string.rec_started );
+                    ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record_active );
+
+                    createRecording();
+                }
+            }
+            _mwengine.setRecordingState(newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator);
         });
     }
 
     public void setModeToggleListener( final Button b )
     {
-        b.setOnClickListener( new OnClickListener()
-        {
-            @Override
-            public void onClick( View v )
-            {
-                Core.notify( new ToggleSequencerModeCommand(), b );
-            }
-        });
+        b.setOnClickListener( v -> Core.notify( new ToggleSequencerModeCommand(), b ));
     }
 
     public void setKickListener( ImageButton b )
     {
         buttonKick = b;
 
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                deactivateParticleButtons();
-                particleSound = ParticleSounds.PARTICLE_KICK;
+        b.setOnClickListener( v -> {
+            deactivateParticleButtons();
+            particleSound = ParticleSounds.PARTICLE_KICK;
 
-                (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_kick_active ));
-            }
+            (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_kick_active ));
         });
     }
 
@@ -464,15 +465,11 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         buttonSnare = b;
 
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                deactivateParticleButtons();
-                particleSound = ParticleSounds.PARTICLE_PAD;
+        b.setOnClickListener( v -> {
+            deactivateParticleButtons();
+            particleSound = ParticleSounds.PARTICLE_PAD;
 
-                (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_snare_active ));
-            }
+            (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_snare_active ));
         });
     }
 
@@ -480,15 +477,11 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         buttonSaw = b;
 
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                deactivateParticleButtons();
-                particleSound = ParticleSounds.PARTICLE_SAW;
+        b.setOnClickListener( v -> {
+            deactivateParticleButtons();
+            particleSound = ParticleSounds.PARTICLE_SAW;
 
-                (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_saw_active ));
-            }
+            (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_saw_active ));
         });
     }
 
@@ -496,15 +489,11 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         buttonTwang = b;
 
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                deactivateParticleButtons();
-                particleSound = ParticleSounds.PARTICLE_TWANG;
+        b.setOnClickListener( v -> {
+            deactivateParticleButtons();
+            particleSound = ParticleSounds.PARTICLE_TWANG;
 
-                (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_ks_active ));
-            }
+            (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_ks_active ));
         });
     }
 
@@ -512,49 +501,27 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         buttonSine = b;
 
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                deactivateParticleButtons();
-                particleSound = ParticleSounds.PARTICLE_SINE;
+        b.setOnClickListener( v -> {
+            deactivateParticleButtons();
+            particleSound = ParticleSounds.PARTICLE_SINE;
 
-                (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_sine_active ));
-            }
+            (( ImageButton ) v ).setImageDrawable( getResources().getDrawable( R.drawable.icon_sine_active ));
         });
     }
 
     public void setDelayListener( ImageButton b )
     {
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                Core.notify( new ToggleDelayCommand(), masterBus );
-            }
-        });
+        b.setOnClickListener( v -> Core.notify( new ToggleDelayCommand(), masterBus ));
     }
 
     public void setDistortionListener( ImageButton b )
     {
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                Core.notify( new ToggleDistortionCommand(), masterBus );
-            }
-        });
+        b.setOnClickListener( v -> Core.notify( new ToggleDistortionCommand(), masterBus ));
     }
 
     public void setFilterListener( ImageButton b )
     {
-        b.setOnClickListener( new OnClickListener()
-        {
-            public void onClick( View v )
-            {
-                Core.notify( new ToggleFilterCommand() );
-            }
-        });
+        b.setOnClickListener( v -> Core.notify( new ToggleFilterCommand() ));
     }
 
     @Override
@@ -755,21 +722,12 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         // note the Object pooling
 
-        _renderer = new ViewRenderer( getHolder(), this, getContext(), new Handler()
-        {
-            @Override
-            public void handleMessage( Message m )
-            {
-                // Use for pushing back messages.
-            }
-        });
-
+        _renderer = new ViewRenderer( getHolder(), this );
         _renderer.start();
 
         if ( _mwengine == null )
         {
-            _mwengine = new MWEngine( getContext(), new StateObserver() );
-
+            _mwengine = new MWEngine( getContext(), new StateObserver());
             // note we only invoke the starting of the engine on actual creation, when restoring
             // threads (window focus change?) keep in mind the audio engine is Object pooled
             // (and will throw exceptions when setting a new song after restarting!)
@@ -828,7 +786,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             _mwengine.createOutput( sampleRate, KosmConstants.BUFFER_SIZE );
 
         _mwengine.getSequencerController().updateMeasures(1, getStepsPerBar()); // just one
-        Core.notify(new CreateMasterBusCommand());
+        Core.notify( new CreateMasterBusCommand());
 
         // start / unpause thread (if thread was initialized and started previously)
         _mwengine.start();
