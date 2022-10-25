@@ -94,7 +94,7 @@ public final class WAVWriter
 
                     f.close();
                 }
-                catch ( Exception gah ) {}
+                catch ( Exception ignored ) {}
             }
             aFileName = formatWAVFileName( aFileName );
             output    = WavFile.newWavFile( FileSystem.open( aFileName ), numChannels, numSamples, 16, sampleRate );
@@ -117,7 +117,7 @@ public final class WAVWriter
                     output.writeFrames( buffer, cacheBufferSize );
 
                 }
-                catch ( Exception gah ) {}
+                catch ( Exception ignored ) {}
             }
             // close the file
             output.close();

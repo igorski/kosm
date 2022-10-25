@@ -300,15 +300,18 @@ public final class ViewRenderer extends BaseThread
 
                 if ( sequencerMode != SequencerModes.MODE_RESETTER )
                 {
-                    for ( final AudioParticle s : particles )
+                    synchronized ( container.getParticles() )
                     {
-                        final boolean clickedParticle = s.handleTouchDown(_fingerX, _fingerY);
-
-                        if ( clickedParticle )
+                        for ( final AudioParticle s : particles )
                         {
-                            //DebugTool.log( "TAPPED ON PARTICLE" );
-                            _tappedObject = s;
-                            break;
+                            final boolean clickedParticle = s.handleTouchDown(_fingerX, _fingerY);
+
+                            if ( clickedParticle )
+                            {
+                                //DebugTool.log( "TAPPED ON PARTICLE" );
+                                _tappedObject = s;
+                                break;
+                            }
                         }
                     }
                 }

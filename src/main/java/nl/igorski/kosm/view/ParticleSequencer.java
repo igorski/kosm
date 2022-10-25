@@ -421,9 +421,10 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 };
                 // Check if we have all the necessary permissions, if not: prompt user
-                int permission = Core.getActivity().checkSelfPermission( Manifest.permission.RECORD_AUDIO );
+                int permission = Core.getActivity().checkSelfPermission( PERMISSIONS[0] );
                 if ( permission != PackageManager.PERMISSION_GRANTED ) {
                     Core.getActivity().requestPermissions( PERMISSIONS, 12345678 );
+                    return;
                 }
 
                 // SECOND: check if there is space available for writing 30 seconds of audio

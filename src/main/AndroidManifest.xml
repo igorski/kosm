@@ -3,6 +3,7 @@
 
     <!-- required permissions -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- requested at runtime -->
 
     <!-- required features -->
     <uses-feature android:name="android.hardware.sensor.accelerometer" />

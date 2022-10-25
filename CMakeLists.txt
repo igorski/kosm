@@ -94,11 +94,9 @@ set(MWENGINE_PROCESSORS ${CPP_SRC}/processors/bitcrusher.cpp
                         ${CPP_SRC}/processors/delay.cpp
                         ${CPP_SRC}/processors/filter.cpp
                         ${CPP_SRC}/processors/finalizer.cpp
-                        ${CPP_SRC}/processors/fm.cpp
                         ${CPP_SRC}/processors/formantfilter.cpp
                         ${CPP_SRC}/processors/limiter.cpp
                         ${CPP_SRC}/processors/lpfhpfilter.cpp
-                        ${CPP_SRC}/processors/phaser.cpp
                         ${CPP_SRC}/processors/pitchshifter.cpp
                         ${CPP_SRC}/processors/waveshaper.cpp)
 

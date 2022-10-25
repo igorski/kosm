@@ -17,7 +17,7 @@ import java.io.File;
  */
 public final class Config
 {
-    public final static String OUTPUT_DIRECTORY = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "Download" + File.separator + "Kosm";
+    public final static String OUTPUT_DIRECTORY = "Download" + File.separator + "Kosm";
     public final static String CACHE_FOLDER     = OUTPUT_DIRECTORY + File.separator + "cache";
 
     public final static String RECORDING_CACHE_PREFIX = "cache_";
