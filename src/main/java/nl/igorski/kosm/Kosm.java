@@ -1,5 +1,6 @@
 package nl.igorski.kosm;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageButton;
 import nl.igorski.kosm.controller.menu.OpenEffectsMenuCommand;
@@ -27,6 +28,8 @@ public class Kosm extends BaseActivity implements ICompleteListener
 {
     private static Kosm INSTANCE;
     private ParticleSequencer _sequencer;
+
+    public static int PERMISSIONS_CODE = 12340012;
 
     /* UI elements */
 
@@ -99,6 +102,18 @@ public class Kosm extends BaseActivity implements ICompleteListener
         return INSTANCE.findViewById( R.id.ButtonFilter );
     }
 
+    public static ImageButton getBtnFormant() {
+        return INSTANCE.findViewById( R.id.ButtonFormant );
+    }
+
+    public static ImageButton getBtnPitchshifter() {
+        return INSTANCE.findViewById( R.id.ButtonPitchshifter );
+    }
+
+    public static ImageButton getBtnRecord() {
+        return INSTANCE.findViewById( R.id.ButtonRecord );
+    }
+
     public static ViewRenderer getViewRenderer() {
         return INSTANCE._sequencer.getViewRenderer();
     }
@@ -135,12 +150,21 @@ public class Kosm extends BaseActivity implements ICompleteListener
         _sequencer.setSineListener ( getBtnSine()  );
         _sequencer.setTwangListener( getBtnTwang() );
 
-        _sequencer.setDelayListener     ( getBtnDelay() );
-        _sequencer.setDistortionListener( getBtnDistortion() );
-        _sequencer.setFilterListener    ( getBtnFilter() );
+        _sequencer.setDelayListener       ( getBtnDelay() );
+        _sequencer.setDistortionListener  ( getBtnDistortion() );
+        _sequencer.setFilterListener      ( getBtnFilter() );
+        _sequencer.setFormantListener     ( getBtnFormant() );
+        _sequencer.setPitchShifterListener( getBtnPitchshifter() );
 
         // initialize the assets
         Assets.init( getApplicationContext(), this );
+    }
+
+    @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if ( requestCode == PERMISSIONS_CODE && resultCode == RESULT_OK ) {
+            _sequencer.toggleRecordingState();
+        }
     }
 
     @Override

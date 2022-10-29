@@ -27,6 +27,11 @@ public final class CreateMasterBusCommand extends BaseSimpleCommand
         final ProcessingChain chain = MWEngineCore.getMasterBusProcessors();
         ParticleSequencer.masterBus = new MWProcessingChain( chain );
 
+        // pitchshifter
+
+        ProcessorFactory.createPitchShifter( ParticleSequencer.masterBus );
+        ParticleSequencer.masterBus.pitchshifterActive = false;
+
         // compressor
 
         final Compressor compressor = ProcessorFactory.createCompressor( ParticleSequencer.masterBus );
@@ -36,7 +41,7 @@ public final class CreateMasterBusCommand extends BaseSimpleCommand
         compressor.setRatio    ( .92f );
 
         // limiter
-        ProcessorFactory.createFinalizer  ( ParticleSequencer.masterBus );
+        ProcessorFactory.createFinalizer( ParticleSequencer.masterBus );
         ParticleSequencer.masterBus.finalizerActive = true;
 
         // filter

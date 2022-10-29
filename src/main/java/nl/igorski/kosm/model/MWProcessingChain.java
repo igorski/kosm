@@ -65,6 +65,7 @@ public final class MWProcessingChain
 
     /* pitchshifter properties */
 
+    public boolean pitchshifterActive;
     public PitchShifter pitchShifter;
 
     /* LPF / HPF filter properties */
@@ -114,8 +115,7 @@ public final class MWProcessingChain
 
         /* processors */
 
-        // always active (but mostly idle sparing CPU sources)
-        if ( pitchShifter != null )
+        if ( pitchshifterActive )
             _chain.addProcessor( pitchShifter );
 
         if ( waveshaperActive )

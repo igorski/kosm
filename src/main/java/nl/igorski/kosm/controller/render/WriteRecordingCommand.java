@@ -56,7 +56,7 @@ public class WriteRecordingCommand extends BaseAsyncCommand
         // w/ short recordings the writing has completed before
         // the Progress is initialized, rendering dismissal useless
         // and leaving us a with a non-removable Progress window!
-        Timeout.setTimeout(2500, new Runnable() {
+        Timeout.setTimeout(1000, new Runnable() {
             public void run() {
                 if (_recordingCompleted) {
                     Progress.dismiss();

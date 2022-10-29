@@ -7,11 +7,15 @@ import android.util.DisplayMetrics;
 import android.view.*;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import nl.igorski.kosm.Kosm;
 import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.config.Config;
 import nl.igorski.kosm.controller.effects.ToggleDelayCommand;
 import nl.igorski.kosm.controller.effects.ToggleDistortionCommand;
 import nl.igorski.kosm.controller.effects.ToggleFilterCommand;
+import nl.igorski.kosm.controller.effects.ToggleFormantCommand;
+import nl.igorski.kosm.controller.effects.TogglePitchshifterCommand;
 import nl.igorski.kosm.controller.render.WriteRecordingCommand;
 import nl.igorski.kosm.controller.sequencer.ToggleSequencerModeCommand;
 import nl.igorski.kosm.controller.startup.CreateMasterBusCommand;
@@ -388,6 +392,50 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         INSTANCE._emitters = new Vector<ParticleEmitter>();
     }
 
+    public void toggleRecordingState()
+    {
+        final boolean newRecordingState = !_mwengine.getRecordingState();
+
+        if ( !newRecordingState ) // stop recording
+        {
+            ButtonTool.setImageButtonImage( Kosm.getBtnRecord(), R.drawable.icon_record );
+
+            // renderer has written a recording ? save it to SD card
+            handleRecordingUpdate( true );
+        }
+        else // start recording
+        {
+            // FIRST: permissions check
+            // these may not necessarily all be required for your use case (e.g. if you're not recording
+            // from device audio inputs or reading/writing files) but are here for self-documentation
+
+            String[] PERMISSIONS = {
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+            // Check if we have all the necessary permissions, if not: prompt user
+            int permission = Core.getActivity().checkSelfPermission( PERMISSIONS[0] );
+            if ( permission != PackageManager.PERMISSION_GRANTED ) {
+                Core.getActivity().requestPermissions( PERMISSIONS, Kosm.PERMISSIONS_CODE );
+                return;
+            }
+
+            // SECOND: check if there is space available for writing 30 seconds of audio
+            if ( !Config.canRecord())
+            {
+                Alert.show( Core.getContext(), R.string.error_rec_space );
+            }
+            else
+            {
+                // just started recording ? show message
+                Alert.show( Core.getContext(), R.string.rec_started );
+                ButtonTool.setImageButtonImage( Kosm.getBtnRecord(), R.drawable.icon_record_active );
+
+                createRecording();
+            }
+        }
+        _mwengine.setRecordingState( newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator );
+    }
+
     public void createRecording()
     {
         // create the filename for the recording -- we delay creation until we
@@ -402,46 +450,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     public void setRecordListener( final ImageButton aRecordButton )
     {
         aRecordButton.setOnClickListener( v -> {
-            final boolean newRecordingState = !_mwengine.getRecordingState();
-
-            if ( !newRecordingState ) // stop recording
-            {
-                ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record );
-
-                // renderer has written a recording ? save it to SD card
-                handleRecordingUpdate( true );
-            }
-            else // start recording
-            {
-                // FIRST: permissions check
-                // these may not necessarily all be required for your use case (e.g. if you're not recording
-                // from device audio inputs or reading/writing files) but are here for self-documentation
-
-                String[] PERMISSIONS = {
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                };
-                // Check if we have all the necessary permissions, if not: prompt user
-                int permission = Core.getActivity().checkSelfPermission( PERMISSIONS[0] );
-                if ( permission != PackageManager.PERMISSION_GRANTED ) {
-                    Core.getActivity().requestPermissions( PERMISSIONS, 12345678 );
-                    return;
-                }
-
-                // SECOND: check if there is space available for writing 30 seconds of audio
-                if ( !Config.canRecord())
-                {
-                    Alert.show( Core.getContext(), R.string.error_rec_space );
-                }
-                else
-                {
-                    // just started recording ? show message
-                    Alert.show( Core.getContext(), R.string.rec_started );
-                    ButtonTool.setImageButtonImage( aRecordButton, R.drawable.icon_record_active );
-
-                    createRecording();
-                }
-            }
-            _mwengine.setRecordingState(newRecordingState, FileSystem.getWritableRoot() + File.separator + Config.CACHE_FOLDER + File.separator);
+            toggleRecordingState();
         });
     }
 
@@ -523,6 +532,16 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     public void setFilterListener( ImageButton b )
     {
         b.setOnClickListener( v -> Core.notify( new ToggleFilterCommand() ));
+    }
+
+    public void setFormantListener( ImageButton b )
+    {
+        b.setOnClickListener( v -> Core.notify( new ToggleFormantCommand() ));
+    }
+
+    public void setPitchShifterListener( ImageButton b )
+    {
+        b.setOnClickListener( v -> Core.notify( new TogglePitchshifterCommand() ));
     }
 
     @Override
@@ -708,14 +727,21 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
             if ( masterBus.delayActive )
                 masterBus.delay.setFeedback(( float ) accelerometerScaler( pitch ));
 
-            if ( _formantBus.formantActive )
-                _formantBus.formant.setVowel( Math.round( accelerometerScaler( roll ) * 4d ));
-
             if ( _filterBus.filterActive )
                 _filterBus.filter.setCutoff(( float ) accelerometerScaler( roll ) * AudioConstants.FILTER_MAX_FREQ );
 
-            if ( masterBus.waveshaperActive )
+            if ( _formantBus.formantActive )
+                _formantBus.formant.setVowel( Math.round( accelerometerScaler( roll ) * 4d ));
+
+            if ( masterBus.pitchshifterActive ) {
+                double pitchDown = accelerometerScaler( roll ) * 0.5;
+                double pitchUp   = accelerometerScaler( pitch ) * 0.5;
+                double pitch     = ( 1.0 - pitchDown ) + pitchUp;
+                masterBus.pitchShifter.setPitchShift(( float ) pitch );
+            }
+            if ( masterBus.waveshaperActive ) {
                 masterBus.waveShaper.setAmount(( float ) accelerometerScaler( azimuth ));
+            }
         }
     }
 
@@ -786,12 +812,12 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
         if ( outputCreation || MWEngine.BUFFER_SIZE != bufferSize || MWEngine.SAMPLE_RATE != sampleRate )
             _mwengine.createOutput( sampleRate, KosmConstants.BUFFER_SIZE );
 
-        _mwengine.getSequencerController().updateMeasures(1, getStepsPerBar()); // just one
+        _mwengine.getSequencerController().updateMeasures( 1, getStepsPerBar() ); // just one
         Core.notify( new CreateMasterBusCommand());
 
         // start / unpause thread (if thread was initialized and started previously)
         _mwengine.start();
-        _mwengine.getSequencerController().setPlaying(true); // sequencer is always running in Kosm (otherwise no recording occurs!!)
+        _mwengine.getSequencerController().setPlaying( true ); // sequencer is always running in Kosm (otherwise no recording occurs!!)
     }
     
     /* suspending the app */
@@ -821,10 +847,7 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
     {
         double theValue = Math.abs( MathTool.scale( aValue, 360, 1 )) * 2;
 
-            if ( theValue > 1.0 )
-                theValue = 1.0;
-
-        return theValue;
+        return Math.min( 1.0, theValue );
     }
 
     private void deactivateParticleButtons()
@@ -847,11 +870,12 @@ public final class ParticleSequencer extends SurfaceView implements SurfaceHolde
                         // run the command in a thread to prevent blocking
                         // the UI thread under heavy load
                         new Thread(
-                                new Runnable() {
-                                    public void run() {
-                                        Core.notify(new WriteRecordingCommand());
-                                    }
-                                }).start();
+                            new Runnable() {
+                                public void run() {
+                                    Core.notify( new WriteRecordingCommand() );
+                                }
+                             }
+                         ).start();
                     }
                 },
                 // no save requested > clear recording

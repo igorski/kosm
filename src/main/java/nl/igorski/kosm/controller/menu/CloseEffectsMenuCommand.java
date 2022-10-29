@@ -55,7 +55,8 @@ public final class CloseEffectsMenuCommand extends OpenWaveformMenuCommand
         public void onEvent( int i, BaseTween<?> baseTween )
         {
             final ImageButton[] buttons = new ImageButton[]{
-                Kosm.getBtnDelay(), Kosm.getBtnDistortion(), Kosm.getBtnFilter()
+                Kosm.getBtnDelay(), Kosm.getBtnDistortion(), Kosm.getBtnFilter(),
+                Kosm.getBtnFormant(), Kosm.getBtnPitchshifter()
             };
             int animatedButtons = -1;
 
