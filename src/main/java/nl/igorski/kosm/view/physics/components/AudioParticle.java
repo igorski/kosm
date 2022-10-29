@@ -9,15 +9,15 @@ import blissfulthinking.java.android.apeforandroid.FP;
 import nl.igorski.kosm.model.KosmInstruments;
 import nl.igorski.kosm.util.EventDisposalUtil;
 import nl.igorski.kosm.view.ParticleSequencer;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.audio.definitions.WaveForms;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.utils.math.MathTool;
 import nl.igorski.lib.utils.time.Timeout;
 import blissfulthinking.java.android.ape.APEngine;
 
-import nl.igorski.lib.audio.nativeaudio.AudioParticleEvent;
-import nl.igorski.lib.audio.nativeaudio.BaseAudioEvent;
+import nl.igorski.mwengine.core.AudioParticleEvent;
+import nl.igorski.mwengine.core.BaseAudioEvent;
 
 import nl.igorski.kosm.definitions.ParticleSounds;
 

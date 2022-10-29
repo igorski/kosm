@@ -7,9 +7,9 @@ import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;
 
-import nl.igorski.lib.audio.nativeaudio.Compressor;
-import nl.igorski.lib.audio.nativeaudio.MWEngineCore;
-import nl.igorski.lib.audio.nativeaudio.ProcessingChain;
+import nl.igorski.mwengine.core.Compressor;
+import nl.igorski.mwengine.core.MWEngineCore;
+import nl.igorski.mwengine.core.ProcessingChain;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,16 +27,21 @@ public final class CreateMasterBusCommand extends BaseSimpleCommand
         final ProcessingChain chain = MWEngineCore.getMasterBusProcessors();
         ParticleSequencer.masterBus = new MWProcessingChain( chain );
 
+        // pitchshifter
+
+        ProcessorFactory.createPitchShifter( ParticleSequencer.masterBus );
+        ParticleSequencer.masterBus.pitchshifterActive = false;
+
         // compressor
 
-        final Compressor compressor = ProcessorFactory.createCompressor(ParticleSequencer.masterBus);
+        final Compressor compressor = ProcessorFactory.createCompressor( ParticleSequencer.masterBus );
         ParticleSequencer.masterBus.compressorActive = true;
 
         compressor.setThreshold( -34f );
         compressor.setRatio    ( .92f );
 
         // limiter
-        ProcessorFactory.createFinalizer  ( ParticleSequencer.masterBus );
+        ProcessorFactory.createFinalizer( ParticleSequencer.masterBus );
         ParticleSequencer.masterBus.finalizerActive = true;
 
         // filter

@@ -36,11 +36,13 @@ public class OpenWaveformMenuCommand extends AnimatedMenuCommand
 
         wfAnimationLocked = true;
 
-        // set toggle button as active, and animate out
-        ButtonTool.setImageButtonImage( Kosm.btnWaveformToggle, R.drawable.toggle_wf_active );
+        ImageButton btnWaveformToggle = Kosm.getBtnWaveformToggle();
 
-        Animator.execute( Tween.to( Kosm.btnWaveformToggle, AnimationProps.POSITION_Y, .5f ).
-                          target( -getButtonBottomCoordinate( Kosm.btnWaveformToggle )).
+        // set toggle button as active, and animate out
+        ButtonTool.setImageButtonImage( btnWaveformToggle, R.drawable.toggle_wf_active );
+
+        Animator.execute( Tween.to( btnWaveformToggle, AnimationProps.POSITION_Y, .5f ).
+                          target( -getButtonBottomCoordinate( btnWaveformToggle )).
                           ease( Cubic.IN )).setCallback( new toggleAnimationComplete() );
     }
 
@@ -50,9 +52,10 @@ public class OpenWaveformMenuCommand extends AnimatedMenuCommand
     {
         public void onEvent( int i, BaseTween<?> baseTween )
         {
-            final ImageButton[] buttons = new ImageButton[]{ Kosm.btnSine, Kosm.btnSaw, Kosm.btnTwang,
-                                                             Kosm.btnKick, Kosm.btnSnare };
-
+            final ImageButton[] buttons = new ImageButton[]{
+                Kosm.getBtnSine(), Kosm.getBtnSaw(), Kosm.getBtnTwang(),
+                Kosm.getBtnKick(), Kosm.getBtnSnare()
+            };
             int animatedButtons = -1;
 
             for ( final ImageButton button : buttons )
@@ -71,7 +74,7 @@ public class OpenWaveformMenuCommand extends AnimatedMenuCommand
 
             // slide toggle button back in
 
-            Animator.execute( Tween.to( Kosm.btnWaveformToggle, AnimationProps.POSITION_Y, .7f ).
+            Animator.execute( Tween.to( Kosm.getBtnWaveformToggle(), AnimationProps.POSITION_Y, .7f ).
                                         target( 0 )).ease( Cubic.OUT ).delay( animatedButtons * .1f ).
                                         setCallback( new menuAnimationComplete() );
         }

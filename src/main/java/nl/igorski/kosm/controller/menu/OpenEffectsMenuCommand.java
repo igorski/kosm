@@ -36,12 +36,16 @@ public class OpenEffectsMenuCommand extends AnimatedMenuCommand
 
         fxAnimationLocked = true;
 
-        // set toggle button as inactive, and animate out
-        ButtonTool.setImageButtonImage( Kosm.btnEffectsToggle, R.drawable.toggle_fx_active );
+        ImageButton btnEffectsToggle = Kosm.getBtnEffectsToggle();
 
-        Animator.execute( Tween.to( Kosm.btnEffectsToggle, AnimationProps.POSITION_Y, .5f ).
-                          target( -getButtonBottomCoordinate( Kosm.btnEffectsToggle )).
-                          ease( Cubic.IN )).setCallback( new toggleAnimationComplete() );
+        // set toggle button as inactive, and animate out
+        ButtonTool.setImageButtonImage( btnEffectsToggle, R.drawable.toggle_fx_active );
+
+        Animator.execute(
+            Tween.to( btnEffectsToggle, AnimationProps.POSITION_Y, .5f ).
+            target( -getButtonBottomCoordinate( btnEffectsToggle )).
+            ease( Cubic.IN )
+        ).setCallback( new toggleAnimationComplete() );
     }
 
     /* event handlers */
@@ -50,8 +54,10 @@ public class OpenEffectsMenuCommand extends AnimatedMenuCommand
     {
         public void onEvent( int i, BaseTween<?> baseTween )
         {
-            final ImageButton[] buttons = new ImageButton[]{ Kosm.btnDelay, Kosm.btnDistortion, Kosm.btnFilter };
-
+            final ImageButton[] buttons = new ImageButton[]{
+                Kosm.getBtnDelay(), Kosm.getBtnDistortion(), Kosm.getBtnFilter(),
+                Kosm.getBtnFormant(), Kosm.getBtnPitchshifter()
+            };
             int animatedButtons = -1;
 
             for ( final ImageButton button : buttons )
@@ -70,9 +76,11 @@ public class OpenEffectsMenuCommand extends AnimatedMenuCommand
 
             // slide toggle button back in
 
-            Animator.execute( Tween.to( Kosm.btnEffectsToggle, AnimationProps.POSITION_Y, .7f ).
-                                        target( 0 )).ease( Cubic.OUT ).delay( animatedButtons * .1f ).
-                                        setCallback( new menuAnimationComplete() );
+            Animator.execute(
+                Tween.to( Kosm.getBtnEffectsToggle(), AnimationProps.POSITION_Y, .7f ).
+                target( 0 )
+            ).ease( Cubic.OUT ).delay( animatedButtons * .1f )
+            .setCallback( new menuAnimationComplete() );
         }
     }
 

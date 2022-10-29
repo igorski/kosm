@@ -12,7 +12,7 @@ import nl.igorski.kosm.R;
 import nl.igorski.kosm.model.MWProcessingChain;
 import nl.igorski.kosm.definitions.ParticleSounds;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
-import nl.igorski.lib.audio.nativeaudio.RouteableOscillator;
+import nl.igorski.mwengine.core.RouteableOscillator;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.framework.interfaces.INotification;
 import nl.igorski.lib.utils.debugging.DebugTool;
@@ -32,17 +32,13 @@ public class ToggleFilterCommand extends BaseSimpleCommand
     {
         DebugTool.log( "TOGGLE FILTER COMMAND" );
 
-        // we apply TWO filters
-        // one being a LFO-operated high pass filter
-        // the other being a formant filter
+        // apply LFO-operated high pass filter
 
-        final InternalSynthInstrument formantInstrument = KosmInstruments.getInstrumentByParticleSound(ParticleSounds.PARTICLE_KICK);
         final InternalSynthInstrument filterInstrument  = KosmInstruments.getInstrumentByParticleSound( ParticleSounds.PARTICLE_SINE );
 
-        final MWProcessingChain filterChain  = filterInstrument.processingChain;
-        final MWProcessingChain formantChain = formantInstrument.processingChain;
+        final MWProcessingChain filterChain = filterInstrument.processingChain;
 
-        final boolean activated = !filterChain.filterActive;  // whether the command will activate or deactivate the filters
+        final boolean activated = !filterChain.filterActive; // whether the command will activate or deactivate the filter
 
         final RouteableOscillator lfo = filterInstrument.instrument.getROsc();
 
@@ -69,17 +65,8 @@ public class ToggleFilterCommand extends BaseSimpleCommand
         filterChain.filterActive = activated;
         filterChain.cacheActiveProcessors();
 
-        // formant filter
-
-        if ( activated ) {
-            formantChain.formant = ProcessorFactory.createFormantFilter( formantChain );
-        }
-
-        formantChain.formantActive = activated;
-        formantChain.cacheActiveProcessors();
-
         final int buttonResourceId = activated ? R.drawable.icon_filter_active : R.drawable.icon_filter;
-        ButtonTool.setImageButtonImage( Kosm.btnFilter, buttonResourceId );
+        ButtonTool.setImageButtonImage( Kosm.getBtnFilter(), buttonResourceId );
 
         super.execute( aNote ); // completes command
     }

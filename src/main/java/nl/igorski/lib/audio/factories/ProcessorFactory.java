@@ -2,10 +2,10 @@ package nl.igorski.lib.audio.factories;
 
 import nl.igorski.kosm.definitions.KosmConstants;
 import nl.igorski.kosm.model.MWProcessingChain;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.audio.definitions.AudioConstants;
 import nl.igorski.lib.audio.definitions.OscillatorDestinations;
-import nl.igorski.lib.audio.nativeaudio.*;
+import nl.igorski.mwengine.core.*;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 
 /**
@@ -30,11 +30,12 @@ public final class ProcessorFactory
 
         if ( chain.delay == null )
         {
-            d = new Delay( chain.delayTime,
-                           KosmConstants.MAX_DELAY_TIME,
-                           chain.delayMix,
-                           chain.delayFeedback, OUTPUT_CHANNELS );
-
+            d = new Delay(
+                chain.delayTime,
+                KosmConstants.MAX_DELAY_TIME,
+                chain.delayMix,
+                chain.delayFeedback, OUTPUT_CHANNELS
+            );
             chain.delay = d;
         }
         else
@@ -54,12 +55,13 @@ public final class ProcessorFactory
 
         if ( chain.filter == null )
         {
-            f = new Filter( chain.filterCutoff,
-                            chain.filterResonance,
-                            AudioConstants.FILTER_MIN_FREQ,
-                            AudioConstants.FILTER_MAX_FREQ,
-                            0.0f, OUTPUT_CHANNELS );
-
+            f = new Filter(
+                chain.filterCutoff,
+                chain.filterResonance,
+                AudioConstants.FILTER_MIN_FREQ,
+                AudioConstants.FILTER_MAX_FREQ,
+                0.0f, OUTPUT_CHANNELS
+            );
             chain.filter = f;
         }
         else
@@ -150,45 +152,21 @@ public final class ProcessorFactory
     {
         Compressor c;
 
-        if ( chain.compressor == null )
-        {
-            c = new Compressor( chain.cThreshold, chain.cAttack, chain.cRelease, chain.cRatio );
+        if ( chain.compressor == null ) {
+            c = new Compressor();
             chain.compressor = c;
-        }
-        else
-        {
+        } else {
             c = chain.compressor;
-
-            c.setThreshold( chain.cThreshold );
-            c.setAttack   ( chain.cAttack );
-            c.setRelease  ( chain.cRelease );
-            c.setRatio    ( chain.cRatio );
-            //c.setGain     ( chain.getCGain());
         }
+        c.setThreshold( chain.cThreshold );
+        c.setAttack   ( chain.cAttack );
+        c.setRelease  ( chain.cRelease );
+        c.setRatio    ( chain.cRatio );
+        //c.setGain     ( chain.getCGain());
+
         return c;
     }
 
-    public static Phaser createPhaser( MWProcessingChain chain )
-    {
-        Phaser p;
-
-        if ( chain.phaser == null )
-        {
-            p = new Phaser( chain.phaserRate, chain.phaserFeedback, chain.phaserDepth,
-                            AudioConstants.PHASER_MIN_FREQ, AudioConstants.PHASER_MAX_FREQ );
-
-            chain.phaser = p;
-        }
-        else
-        {
-            p = chain.phaser;
-
-            p.setRate    ( chain.phaserRate );
-            p.setFeedback( chain.phaserFeedback );
-            p.setDepth   ( chain.phaserDepth );
-        }
-        return p;
-    }
     public static PitchShifter createPitchShifter( MWProcessingChain chain )
     {
         PitchShifter p;
@@ -235,44 +213,6 @@ public final class ProcessorFactory
     }
 
     /* InternalSynthInstrument specific */
-
-    public static FrequencyModulator createFM( InternalSynthInstrument instrument )
-    {
-        FrequencyModulator fm;
-
-        if ( instrument.processingChain.fm == null )
-        {
-            fm = new FrequencyModulator( instrument.instrument.getROsc().getWave(),
-                                         instrument.instrument.getROsc().getSpeed());
-
-            instrument.processingChain.fm = fm;
-        }
-        else
-        {
-            fm = instrument.processingChain.fm;
-
-            fm.setWave( instrument.instrument.getROsc().getWave());
-            fm.setRate( instrument.instrument.getROsc().getSpeed());
-       }
-        return fm;
-    }
-
-    /**
-     * LFO is a member of a RouteableOscillator, but isn't accessed
-     * directly, the RouteableOscillator is the mediator
-     *
-     * @param oscillator {RouteableOscillator}
-     * @return {LFO}
-     */
-    public static LFO updateLFO( RouteableOscillator oscillator )
-    {
-        LFO l = oscillator.getLinkedOscillator();   // LFO ALWAYS exists (created in native layer)
-
-        l.setWave( oscillator.getWave());
-        l.setRate( oscillator.getSpeed());
-
-        return l;
-    }
 
     public static Filter createFilter( MWProcessingChain chain, RouteableOscillator oscillator )
     {

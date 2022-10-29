@@ -119,6 +119,24 @@
                      android:clickable="false"
                      android:alpha="0" />
 
+        <ImageButton android:id="@+id/ButtonFormant"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/menubutton"
+                     android:src="@drawable/icon_formant"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
+        <ImageButton android:id="@+id/ButtonPitchshifter"
+                     style="@style/ButtonIcon"
+                     android:background="@drawable/menubutton"
+                     android:src="@drawable/icon_pitchshifter"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:clickable="false"
+                     android:alpha="0" />
+
     </LinearLayout>
 
     <!-- bottom button : sequencer mode toggle -->

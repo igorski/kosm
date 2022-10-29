@@ -2,7 +2,7 @@ package nl.igorski.kosm.controller.startup;
 
 import nl.igorski.lib.audio.definitions.WaveForms;
 import nl.igorski.lib.audio.factories.ProcessorFactory;
-import nl.igorski.lib.audio.nativeaudio.SynthInstrument;
+import nl.igorski.mwengine.core.SynthInstrument;
 import nl.igorski.lib.audio.vo.instruments.InternalSynthInstrument;
 import nl.igorski.lib.framework.controller.BaseSimpleCommand;
 import nl.igorski.lib.framework.interfaces.INotification;

@@ -1,15 +1,12 @@
 package nl.igorski.kosm;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import com.nineoldandroids.view.ViewHelper;
 import nl.igorski.kosm.controller.menu.OpenEffectsMenuCommand;
 import nl.igorski.kosm.controller.menu.OpenWaveformMenuCommand;
 import nl.igorski.lib.listeners.ICompleteListener;
 
-import nl.igorski.kosm.R;
 import nl.igorski.kosm.controller.menu.CloseEffectsMenuCommand;
 import nl.igorski.kosm.controller.menu.CloseWaveformMenuCommand;
 import nl.igorski.kosm.controller.startup.StartupCommand;
@@ -29,23 +26,19 @@ import nl.igorski.lib.utils.debugging.DebugTool;
  */
 public class Kosm extends BaseActivity implements ICompleteListener
 {
-    private static ParticleSequencer _sequencer;
+    private static Kosm INSTANCE;
+    private ParticleSequencer _sequencer;
+
+    public static int PERMISSIONS_CODE = 12340012;
 
     /* UI elements */
 
-    public static ImageButton btnWaveformToggle;
-    public static boolean     waveformMenuOpened = false;
-    public static ImageButton btnSine;
-    public static ImageButton btnSaw;
-    public static ImageButton btnTwang;
-    public static ImageButton btnKick;
-    public static ImageButton btnSnare;
+    public static boolean waveformMenuOpened = false;
+    public static boolean effectsMenuOpened  = false;
 
-    public static ImageButton btnEffectsToggle;
-    public static boolean     effectsMenuOpened = false;
-    public static ImageButton btnDelay;
-    public static ImageButton btnDistortion;
-    public static ImageButton btnFilter;
+    public Kosm() {
+        INSTANCE = this;
+    }
 
     /* called when the activity is first created. */
 
@@ -64,12 +57,65 @@ public class Kosm extends BaseActivity implements ICompleteListener
     public void handleComplete( boolean completed )
     {
         // sine is default particle sound set in ParticleSequencer, highlight button
-        btnSine.setImageDrawable( getResources().getDrawable( R.drawable.icon_sine_active ));
+        getBtnSine().setImageDrawable( getResources().getDrawable( R.drawable.icon_sine_active, null ));
     }
 
-    public static ViewRenderer getViewRenderer()
-    {
-        return _sequencer.getViewRenderer();
+    /* getters */
+
+    public static ImageButton getBtnWaveformToggle() {
+        return INSTANCE.findViewById( R.id.WFToggle );
+    }
+
+    public static ImageButton getBtnSine() {
+        return INSTANCE.findViewById( R.id.ButtonSine );
+    }
+
+    public static ImageButton getBtnSaw() {
+        return INSTANCE.findViewById( R.id.ButtonSaw );
+    }
+
+    public static ImageButton getBtnTwang() {
+        return INSTANCE.findViewById( R.id.ButtonTwang );
+    }
+
+    public static ImageButton getBtnKick() {
+        return INSTANCE.findViewById( R.id.ButtonKick );
+    }
+
+    public static ImageButton getBtnSnare() {
+        return INSTANCE.findViewById( R.id.ButtonSnare );
+    }
+
+    public static ImageButton getBtnEffectsToggle() {
+        return INSTANCE.findViewById( R.id.FXToggle );
+    }
+
+    public static ImageButton getBtnDelay() {
+        return INSTANCE.findViewById( R.id.ButtonDelay );
+    }
+
+    public static ImageButton getBtnDistortion() {
+        return INSTANCE.findViewById( R.id.ButtonDistortion );
+    }
+
+    public static ImageButton getBtnFilter() {
+        return INSTANCE.findViewById( R.id.ButtonFilter );
+    }
+
+    public static ImageButton getBtnFormant() {
+        return INSTANCE.findViewById( R.id.ButtonFormant );
+    }
+
+    public static ImageButton getBtnPitchshifter() {
+        return INSTANCE.findViewById( R.id.ButtonPitchshifter );
+    }
+
+    public static ImageButton getBtnRecord() {
+        return INSTANCE.findViewById( R.id.ButtonRecord );
+    }
+
+    public static ViewRenderer getViewRenderer() {
+        return INSTANCE._sequencer.getViewRenderer();
     }
 
     /* protected methods */
@@ -77,64 +123,53 @@ public class Kosm extends BaseActivity implements ICompleteListener
     @Override
     protected void initAssets()
     {
-        _sequencer = ( ParticleSequencer ) findViewById( R.id.app );
+        _sequencer = findViewById( R.id.app );
 
-        /* grab references to waveform buttons in template */
-
-        btnWaveformToggle = ( ImageButton ) findViewById( R.id.WFToggle );
-        btnSine           = ( ImageButton ) findViewById( R.id.ButtonSine );
-        btnSaw            = ( ImageButton ) findViewById( R.id.ButtonSaw );
-        btnTwang          = ( ImageButton ) findViewById( R.id.ButtonTwang );
-        btnKick           = ( ImageButton ) findViewById( R.id.ButtonKick );
-        btnSnare          = ( ImageButton ) findViewById( R.id.ButtonSnare );
-
-        btnWaveformToggle.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View v )
-            {
-                if ( !waveformMenuOpened )
-                    Core.notify( new OpenWaveformMenuCommand() );
-                else
-                    Core.notify( new CloseWaveformMenuCommand() );
-            }
+        getBtnWaveformToggle().setOnClickListener( v -> {
+            if ( !waveformMenuOpened )
+                Core.notify( new OpenWaveformMenuCommand() );
+            else
+                Core.notify( new CloseWaveformMenuCommand() );
         });
 
-        ViewHelper.setTranslationX( btnWaveformToggle, -btnWaveformToggle.getWidth() / 2 + btnWaveformToggle.getLeft() );
+        getBtnWaveformToggle().setTranslationX( -getBtnWaveformToggle().getWidth() / 2 + getBtnWaveformToggle().getLeft() );
 
-        /* grab references to effects buttons in template */
-
-        btnEffectsToggle = ( ImageButton ) findViewById( R.id.FXToggle );
-        btnDelay         = ( ImageButton ) findViewById( R.id.ButtonDelay );
-        btnDistortion    = ( ImageButton ) findViewById( R.id.ButtonDistortion );
-        btnFilter        = ( ImageButton ) findViewById( R.id.ButtonFilter );
-
-        btnEffectsToggle.setOnClickListener( new View.OnClickListener()
-        {
-            @Override
-            public void onClick( View v )
-            {
-                if ( !effectsMenuOpened )
-                    Core.notify( new OpenEffectsMenuCommand() );
-                else
-                    Core.notify( new CloseEffectsMenuCommand() );
-            }
+        getBtnEffectsToggle().setOnClickListener( v -> {
+            if ( !effectsMenuOpened )
+                Core.notify( new OpenEffectsMenuCommand() );
+            else
+                Core.notify( new CloseEffectsMenuCommand() );
         });
 
-        _sequencer.setModeToggleListener(( Button )      findViewById( R.id.ButtonModeToggle ));
-        _sequencer.setRecordListener    (( ImageButton ) findViewById( R.id.ButtonRecord ));
+        _sequencer.setModeToggleListener( findViewById( R.id.ButtonModeToggle ));
+        _sequencer.setRecordListener    ( findViewById( R.id.ButtonRecord ));
 
-        _sequencer.setKickListener ( btnKick  );
-        _sequencer.setSawListener  ( btnSaw   );
-        _sequencer.setSnareListener( btnSnare );
-        _sequencer.setSineListener ( btnSine  );
-        _sequencer.setTwangListener( btnTwang );
+        _sequencer.setKickListener ( getBtnKick()  );
+        _sequencer.setSawListener  ( getBtnSaw()   );
+        _sequencer.setSnareListener( getBtnSnare() );
+        _sequencer.setSineListener ( getBtnSine()  );
+        _sequencer.setTwangListener( getBtnTwang() );
 
-        _sequencer.setDelayListener     ( btnDelay );
-        _sequencer.setDistortionListener( btnDistortion );
-        _sequencer.setFilterListener    ( btnFilter );
+        _sequencer.setDelayListener       ( getBtnDelay() );
+        _sequencer.setDistortionListener  ( getBtnDistortion() );
+        _sequencer.setFilterListener      ( getBtnFilter() );
+        _sequencer.setFormantListener     ( getBtnFormant() );
+        _sequencer.setPitchShifterListener( getBtnPitchshifter() );
 
         // initialize the assets
         Assets.init( getApplicationContext(), this );
+    }
+
+    @Override
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if ( requestCode == PERMISSIONS_CODE && resultCode == RESULT_OK ) {
+            _sequencer.toggleRecordingState();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        INSTANCE = null;
     }
 }

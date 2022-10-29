@@ -30,11 +30,11 @@
     <string name="rec_started">Recording started</string>
     <string name="rec_stopped">Recording stopped</string>
     <string name="rec_queued">Recording will start after starting sequencer</string>
-    <string name="rec_saved">Recording saved to device</string>
+    <string name="rec_saved">Recording saved to your download folder</string>
     <string name="rec_req_save">Save recording to your device? Note that saving might take a moment.</string>
     <string name="rec_req_save_nospace">Your device hasn\'t got enough storage space available for recording another 30 seconds of audio... Save current recording to your device? Note that saving might take a moment.</string>
     <string name="title_render">Rendering audio</string>
-    <string name="msg_render">Please wait while your device is rendering your track to a file.</string>
+    <string name="msg_render">Please wait while your device is rendering your performance to an audio file.</string>
 
     <!-- errors -->
     <string name="error_memory">Out of memory. Could not save recording.</string>

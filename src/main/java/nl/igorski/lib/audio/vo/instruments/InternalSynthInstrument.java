@@ -1,13 +1,11 @@
 package nl.igorski.lib.audio.vo.instruments;
 
 import nl.igorski.kosm.model.MWProcessingChain;
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.audio.interfaces.IUpdateableInstrument;
-import nl.igorski.lib.audio.factories.ProcessorFactory;
-
-import nl.igorski.lib.audio.nativeaudio.Arpeggiator;
-import nl.igorski.lib.audio.nativeaudio.BufferUtility;
-import nl.igorski.lib.audio.nativeaudio.SynthInstrument;
+import nl.igorski.mwengine.core.Arpeggiator;
+import nl.igorski.mwengine.core.BufferUtility;
+import nl.igorski.mwengine.core.SynthInstrument;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,9 +16,9 @@ import nl.igorski.lib.audio.nativeaudio.SynthInstrument;
  */
 public final class InternalSynthInstrument
 {
-    public SynthInstrument     instrument;
+    public SynthInstrument   instrument;
     public MWProcessingChain processingChain;
-    public int                 index;
+    public int               index;
 
     /* private variables */
 
@@ -47,24 +45,6 @@ public final class InternalSynthInstrument
     }
 
     /* public methods */
-
-    public void createEffectsChain()
-    {
-        // auto-constructs all available effects (these are still disabled until activated)
-
-        ProcessorFactory.createBitCrusher   ( processingChain );
-        //ProcessorFactory.createCompressor   ( processingChain );
-        ProcessorFactory.createDecimator    ( processingChain );
-        ProcessorFactory.createDelay        ( processingChain );
-        ProcessorFactory.createFilter       ( processingChain );
-        ProcessorFactory.createFM           ( this );
-        ProcessorFactory.createFormantFilter( processingChain );
-        ProcessorFactory.createPhaser       ( processingChain );
-        ProcessorFactory.createPitchShifter ( processingChain );
-
-        // scale down the bit crushers input mix for the synth instrument
-        processingChain.bitCrusher.setInputMix( .65f );
-    }
 
     public void reset()
     {

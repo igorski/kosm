@@ -1,6 +1,6 @@
 package nl.igorski.lib.audio.utils;
 
-import nl.igorski.lib.audio.MWEngine;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.utils.debugging.DebugTool;
 import nl.igorski.lib.utils.storage.FileSystem;
 import uk.labbookpages.wave.WavFile;
@@ -94,7 +94,7 @@ public final class WAVWriter
 
                     f.close();
                 }
-                catch ( Exception gah ) {}
+                catch ( Exception ignored ) {}
             }
             aFileName = formatWAVFileName( aFileName );
             output    = WavFile.newWavFile( FileSystem.open( aFileName ), numChannels, numSamples, 16, sampleRate );
@@ -117,7 +117,7 @@ public final class WAVWriter
                     output.writeFrames( buffer, cacheBufferSize );
 
                 }
-                catch ( Exception gah ) {}
+                catch ( Exception ignored ) {}
             }
             // close the file
             output.close();

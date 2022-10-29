@@ -47,7 +47,7 @@ public class WriteRecordingCommand extends BaseAsyncCommand
         final String directory = Config.OUTPUT_DIRECTORY;
         final String fileName  = RecordingUtil.generateFilename();
 
-        WAVWriter.mergeWAVFiles(CacheReader.getCachedRecording(), directory + File.separator + FileSystem.sanitizeFileName(fileName));
+        WAVWriter.mergeWAVFiles( CacheReader.getCachedRecording(), directory + File.separator + FileSystem.sanitizeFileName( fileName ));
         CacheWriter.flushCache();
 
         DebugTool.log( "CACHED OUTPUT WRITTEN TO WAVE FILE" );
@@ -56,7 +56,7 @@ public class WriteRecordingCommand extends BaseAsyncCommand
         // w/ short recordings the writing has completed before
         // the Progress is initialized, rendering dismissal useless
         // and leaving us a with a non-removable Progress window!
-        Timeout.setTimeout(2500, new Runnable() {
+        Timeout.setTimeout(1000, new Runnable() {
             public void run() {
                 if (_recordingCompleted) {
                     Progress.dismiss();

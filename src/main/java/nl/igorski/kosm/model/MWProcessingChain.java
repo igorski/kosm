@@ -1,7 +1,7 @@
 package nl.igorski.kosm.model;
 
-import nl.igorski.lib.audio.MWEngine;
-import nl.igorski.lib.audio.nativeaudio.*;
+import nl.igorski.mwengine.MWEngine;
+import nl.igorski.mwengine.core.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,11 +17,6 @@ public final class MWProcessingChain
     // each processor created in a session, as the native audio engine
     // uses Object pooling these are never destroyed until the application quits
 
-    /* FM properties */
-
-    public boolean fmActive;
-    public FrequencyModulator fm;
-
     /* filter properties */
 
     public float filterCutoff;
@@ -34,14 +29,6 @@ public final class MWProcessingChain
     public double filterFormant;
     public boolean formantActive;
     public FormantFilter formant;
-
-    /* phaser properties */
-
-    public float phaserRate;
-    public float phaserFeedback;
-    public float phaserDepth;
-    public boolean phaserActive;
-    public Phaser phaser;
 
     /* distortion properties */
 
@@ -78,6 +65,7 @@ public final class MWProcessingChain
 
     /* pitchshifter properties */
 
+    public boolean pitchshifterActive;
     public PitchShifter pitchShifter;
 
     /* LPF / HPF filter properties */
@@ -101,10 +89,6 @@ public final class MWProcessingChain
         filterCutoff    = MWEngine.SAMPLE_RATE / 4;
         filterResonance = ( float )( Math.sqrt( 1 ) / 2 );
         filterFormant   = 0;
-
-        phaserDepth     = 0.5f;
-        phaserFeedback  = 0.7f;
-        phaserRate      = 0.5f;
 
         delayTime       = 250f;
         delayMix        = .25f;
@@ -131,21 +115,14 @@ public final class MWProcessingChain
 
         /* processors */
 
-        // always active (but mostly idle sparing CPU sources)
-        if ( pitchShifter != null )
+        if ( pitchshifterActive )
             _chain.addProcessor( pitchShifter );
-
-        if ( fmActive )
-            _chain.addProcessor( fm );
 
         if ( waveshaperActive )
             _chain.addProcessor( waveShaper );
 
         if ( bitCrusherActive )
             _chain.addProcessor( bitCrusher );
-
-        if ( phaserActive )
-            _chain.addProcessor( phaser );
 
         if ( filterActive )
             _chain.addProcessor( filter );
@@ -171,11 +148,9 @@ public final class MWProcessingChain
 
     public void reset()
     {
-        fmActive         = false;
         waveshaperActive = false;
         bitCrusherActive = false;
         decimatorActive  = false;
-        phaserActive     = false;
         filterActive     = false;
         formantActive    = false;
         compressorActive = false;

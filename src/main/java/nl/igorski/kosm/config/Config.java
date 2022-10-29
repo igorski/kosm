@@ -1,7 +1,9 @@
 package nl.igorski.kosm.config;
 
-import nl.igorski.lib.audio.nativeaudio.BufferUtility;
-import nl.igorski.lib.audio.MWEngine;
+import android.os.Environment;
+
+import nl.igorski.mwengine.core.BufferUtility;
+import nl.igorski.mwengine.MWEngine;
 import nl.igorski.lib.utils.storage.FileSystem;
 
 import java.io.File;
@@ -15,11 +17,11 @@ import java.io.File;
  */
 public final class Config
 {
-    public final static String OUTPUT_DIRECTORY  = "Kosm";
-    public final static String CACHE_FOLDER      = OUTPUT_DIRECTORY + File.separator + "cache";
+    public final static String OUTPUT_DIRECTORY = "Download" + File.separator + "Kosm";
+    public final static String CACHE_FOLDER     = OUTPUT_DIRECTORY + File.separator + "cache";
 
     public final static String RECORDING_CACHE_PREFIX = "cache_";
-    public final static int RECORDING_FRAGMENT_SIZE   = 30000; // 30 seconds in ms
+    public final static int RECORDING_FRAGMENT_SIZE   = 15000; // 30 seconds in ms
 
     /**
      * quick query to determine whether the device has space for recording
