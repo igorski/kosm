@@ -23,7 +23,7 @@ In other words : high performance of the engine is ensured by the native layer o
 development is ensured by keeping application logic / UI within the realm of the Android Java SDK. For more
 details and plenty of Wiki documentation you can go to the MWEngine repository :
 
-[https://github.com/igorski/MWEngine](MWEngine on Github)
+[MWEngine on Github](https://github.com/igorski/MWEngine)
 
 Note: the supplied JNI code in this repository is a fork of an older MWEngine version. If you wish to use
 MWEngine with the latest performance improvements, processors and AAudio support, visit the aforementioned
@@ -36,7 +36,7 @@ Kosm-specific "AudioParticleEvent" class.
 
 Kosm relies on the APE physics engine and uses a modified version of the Android version. Sadly, the
 original Android library doesn't seem to be maintained anymore (the old Subversion repository on Google Code
-has been migrated to Github though : https://github.com/msoftware/ape-physics-for-android)
+has been [migrated to Github](https://github.com/msoftware/ape-physics-for-android) though)
 
 Credits for APE go to Alec Cove, Theo Galanakis (Java port) and Michiel van den Anker (Android port).
 
