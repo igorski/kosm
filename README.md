@@ -12,6 +12,9 @@ Kosm is an old, old lady. The code base has been updated to work with modern Gra
 and to be available to work on Google Plays latest platform requirements, but the code base goes back
 quite a few years. Heck, it was originally built for Android 2.3.
 
+Kosm is in maintenance mode. It will receive updates whenever Google Play's policies indicate that
+a change is necessary to keep the app available.
+
 ### MWEngine audio engine
 
 Kosm is built on top of MWEngine, an open source audio engine for Android by igorski. MWEngine is
