@@ -22,7 +22,7 @@ android {
         applicationId "nl.igorski.kosm"
         minSdkVersion 23
         targetSdkVersion 34
-        versionCode 17
+        versionCode 18
         versionName "2.1.1"
 
         ndk {
