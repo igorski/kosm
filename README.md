@@ -15,7 +15,7 @@ quite a few years. Heck, it was originally built to run on _Android 2.3_.
 Kosm had been in maintenance mode for a few years and was occassionally updated whenever Google Play's policies indicated that
 a change was necessary to keep the app available. As of December 2024, this repository is **archived**.
 
-At the moment of archival, the app should compile and run, but note it is no longer maintained. Basically, you're on your own dealing
+At the moment of archival, the app should compile and run, but note this repository is no **longer maintained**. Basically, you're on your own dealing
 with any future (breaking) changes to Android API's. Regardless, it shouldn't prove _too_ troublesome. *knocks wood* 😬
 
 ### MWEngine audio engine
