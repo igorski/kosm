@@ -8,32 +8,34 @@ Keywords : chaos, chance, microtonal.
 
 ## A word of codebase caution
 
-Kosm is an old, old lady. The code base has been updated to work with modern Gradle based toolchains
-and to be available to work on Google Plays latest platform requirements, but the code base goes back
-quite a few years. Heck, it was originally built for Android 2.3.
+Kosm is an old, old lady. The codebase has been updated to work with modern Gradle based toolchains
+and to be available to work on Google Plays latest platform requirements (starting from API 34), but the code itself goes back
+quite a few years. Heck, it was originally built to run on _Android 2.3_.
 
-Kosm is in maintenance mode. It will receive updates whenever Google Play's policies indicate that
-a change is necessary to keep the app available.
+Kosm had been in maintenance mode for a few years and was occassionally updated whenever Google Play's policies indicated that
+a change was necessary to keep the app available. As of December 2024, this repository is **archived**.
+
+At the moment of archival, the app should compile and run, but note it is no longer maintained. Basically, you're on your own dealing
+with any future (breaking) changes to Android API's. Regardless, it shouldn't prove _too_ troublesome. *knocks wood* 😬
 
 ### MWEngine audio engine
 
-Kosm is built on top of MWEngine, an open source audio engine for Android by igorski. MWEngine is
-written in C++, using OpenSL for low latency performance. Though the engine is written in C++ (and can be
-used solely within this context), the library is built using JNI (Java Native Interface) allowing its methods
+Kosm was built on top of MWEngine, an open source audio engine for Android from the same developer. MWEngine is
+written in C++, leveraging OpenSL for low latency performance. Though the engine is written in C++ (and can be
+used solely within this context), the library is wrapped using JNI (Java Native Interface) allowing its methods
 to be exposed to Java/Kotlin while still executing in a native layer outside of the Dalvik/ART VM.
 
 In other words : high performance of the engine is ensured by the native layer operations, while ease of
 development is ensured by keeping application logic / UI within the realm of the Android Java SDK. For more
-details and plenty of Wiki documentation you can go to the MWEngine repository :
+details and plenty of up-to-date Wiki documentation you can go to the MWEngine repository :
 
 [MWEngine on Github](https://github.com/igorski/MWEngine)
 
-Note: the supplied JNI code in this repository is a fork of an older MWEngine version. If you wish to use
+Note: the supplied JNI code in this repository is a **fork of an older MWEngine version**. If you wish to use
 MWEngine with the latest performance improvements, processors and AAudio support, visit the aforementioned
 project URL. It is recommended to build MWEngine as an .AAR library instead of copying files and makelists.
 
-Kosm inherits most of the basic MWEngine classes, with the `/jni/kosm`-folder containing the
-Kosm-specific "AudioParticleEvent" class.
+Kosm inherits most of the basic MWEngine classes, with the `/jni/kosm`-folder containing the Kosm-specific `AudioParticleEvent` class.
 
 ### APE Physics engine
 
